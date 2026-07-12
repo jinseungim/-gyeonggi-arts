@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선배가 전하는 말 · 경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #e6d8c3;
+    border-bottom: 1px solid rgba(139,94,60,0.3);
+    padding: 14px 18px;
+  }
+  .topbar .back {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px; color: #2b2b2b;
+    background: none; border: none; cursor: pointer; padding: 6px 10px;
+  }
+  .topbar .title { font-size: 26px; color: #2b2b2b; }
+  .topbar .spacer { width: 44px; }
+
+  /* 헤더 타이틀 */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 16px 4px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(26px, 6vw, 44px);
+    color: #3b2a1e;
+  }
+  .hint {
+    margin-top: 12px;
+    font-size: clamp(12px, 2.4vw, 14px);
+    color: #b8894a;
+    transition: opacity 0.3s;
+  }
+
+  main {
+    position: relative; z-index: 1;
+    flex: 1; width: 100%;
+    max-width: 720px; margin: 0 auto;
+    padding: 24px 24px 60px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* 캐릭터 4명 가운데 나열 */
+  .lineup {
+    display: flex; justify-content: center; flex-wrap: nowrap;
+    gap: clamp(14px, 4vw, 34px);
+  }
+
+  .char {
+    background: none; border: none; padding: 0; cursor: pointer;
+    display: flex; justify-content: center;
+    transition: transform 0.45s cubic-bezier(0.25,0.9,0.3,1), opacity 0.4s ease;
+    will-change: transform, opacity;
+  }
+  .char .ring {
+    width: clamp(72px, 18vw, 110px);
+    height: clamp(72px, 18vw, 110px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fffdf8;
+    border: 3px solid rgba(139,94,60,0.35);
+    box-shadow: 0 4px 12px rgba(59,42,30,0.15);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .char .ring svg { width: 100%; height: 100%; display: block; }
+  .char:hover .ring { box-shadow: 0 10px 20px rgba(59,42,30,0.22); }
+
+  /* 다른 캐릭터가 선택되면 투명 처리 */
+  .lineup.has-selection .char { opacity: 0; pointer-events: none; }
+  .lineup.has-selection .char.active { opacity: 1; pointer-events: auto; }
+  .char.active .ring {
+    border-color: #b8894a;
+    box-shadow: 0 0 0 4px rgba(184,137,74,0.25), 0 12px 22px rgba(59,42,30,0.25);
+  }
+
+  /* 클릭 시 나오는 질문 목록 */
+  .qna {
+    margin-top: 40px;
+    max-width: 560px; width: 100%;
+    display: flex; flex-direction: column; gap: 14px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .qna.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .q-card {
+    background: #fffdf8;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .q-card:hover { box-shadow: 0 8px 18px rgba(59,42,30,0.18); }
+
+  .q-head {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 20px 22px;
+  }
+  .q-card .qnum {
+    flex: 0 0 auto;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: #b8894a; color: #fffdf8;
+    font-family: 'Nanum Myeongjo', serif; font-weight: 700; font-size: 15px;
+  }
+  .q-card .qtext {
+    flex: 1;
+    font-size: clamp(14px, 2.7vw, 16.5px);
+    line-height: 1.65;
+    color: #3b2a1e;
+    padding-top: 3px;
+  }
+  .q-card .q-arrow {
+    flex: 0 0 auto;
+    color: #b8894a; font-size: 15px; padding-top: 5px;
+    transition: transform 0.25s;
+  }
+  .q-card.open .q-arrow { transform: rotate(180deg); }
+
+  /* 답변 패널 */
+  .q-answer {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 22px 0 66px;
+    font-size: clamp(13.5px, 2.6vw, 15.5px);
+    line-height: 1.75;
+    color: rgba(59,42,30,0.85);
+    transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.35s ease;
+  }
+  .q-card.open .q-answer {
+    max-height: 600px;
+    opacity: 1;
+    padding: 0 22px 20px 66px;
+  }
+  .q-answer::before {
+    content: "A.";
+    font-family: 'Nanum Myeongjo', serif; font-weight: 700;
+    color: #b8894a; margin-right: 6px;
+  }
+  .q-answer.empty { color: rgba(59,42,30,0.4); }
+  .q-answer.empty::before { content: ""; margin: 0; }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px; color: #3b2a1e;
+  }
+</style>
+</head>
+<body data-scene="classroom" data-chalk="">
+
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <button class="back" onclick="location.href='arts.html'">&lt;</button>
+    <div class="title">선배가 전하는 말</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">선배가 전하는 말</h1>
+    <p class="hint" id="hint">캐릭터를 눌러보세요</p>
+  </header>
+
+  <main>
+
+    <div class="lineup" id="lineup">
+
+      <!-- 1. 단발 여학생 -->
+      <button class="char" onclick="pick(this)">
+        <div class="ring">
+          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#5b6b8a"/>
+            <rect x="36" y="60" width="12" height="16" fill="#f4d3bf"/>
+            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
+            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#c8455a"/>
+            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f4d3bf"/>
+            <path d="M20 42 q0-30 22-30 t22 30 q-6-8-10-6 q2-10-12-11 q-14 1-12 11 q-4-2-10 6 Z" fill="#4a352a"/>
+            <path d="M20 40 q-2 14 2 20 q-6-16-2-22 Z" fill="#4a352a"/>
+            <path d="M64 40 q2 14 -2 20 q6-16 2-22 Z" fill="#4a352a"/>
+            <circle cx="34" cy="42" r="2.4" fill="#3b2a1e"/>
+            <circle cx="50" cy="42" r="2.4" fill="#3b2a1e"/>
+            <circle cx="30" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
+            <circle cx="54" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
+            <path d="M39 49 q3 3 6 0" stroke="#c8455a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </button>
+
+      <!-- 2. 안경 남학생 -->
+      <button class="char" onclick="pick(this)">
+        <div class="ring">
+          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#6d5a44"/>
+            <rect x="36" y="60" width="12" height="16" fill="#f6dcc4"/>
+            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
+            <rect x="40" y="63" width="4" height="12" fill="#3d5a3a"/>
+            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f6dcc4"/>
+            <path d="M20 40 q-2-28 22-28 t22 28 q-8-12-22-11 q-14-1-22 11 Z" fill="#2c2320"/>
+            <circle cx="34" cy="42" r="6" fill="none" stroke="#3b2a1e" stroke-width="1.6"/>
+            <circle cx="50" cy="42" r="6" fill="none" stroke="#3b2a1e" stroke-width="1.6"/>
+            <line x1="40" y1="42" x2="44" y2="42" stroke="#3b2a1e" stroke-width="1.6"/>
+            <circle cx="34" cy="42" r="2.2" fill="#3b2a1e"/>
+            <circle cx="50" cy="42" r="2.2" fill="#3b2a1e"/>
+            <circle cx="29" cy="49" r="2.6" fill="#f4a9a0" opacity="0.55"/>
+            <circle cx="55" cy="49" r="2.6" fill="#f4a9a0" opacity="0.55"/>
+            <path d="M39 50 q3 2 6 0" stroke="#a8632a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </button>
+
+      <!-- 3. 양갈래 여학생 -->
+      <button class="char" onclick="pick(this)">
+        <div class="ring">
+          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#8a5b6b"/>
+            <rect x="36" y="60" width="12" height="16" fill="#f4d3bf"/>
+            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
+            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#e0a94a"/>
+            <ellipse cx="18" cy="52" rx="7" ry="12" fill="#6b4a2e"/>
+            <ellipse cx="66" cy="52" rx="7" ry="12" fill="#6b4a2e"/>
+            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f4d3bf"/>
+            <path d="M20 40 q-2-30 22-30 t22 30 q-8-14-22-13 q-14-1-22 13 Z" fill="#6b4a2e"/>
+            <circle cx="34" cy="42" r="2.4" fill="#3b2a1e"/>
+            <circle cx="50" cy="42" r="2.4" fill="#3b2a1e"/>
+            <circle cx="30" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
+            <circle cx="54" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
+            <path d="M38 49 q4 4 8 0" stroke="#c8455a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </button>
+
+      <!-- 4. 곱슬 남학생 -->
+      <button class="char" onclick="pick(this)">
+        <div class="ring">
+          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#4a6f5a"/>
+            <rect x="36" y="60" width="12" height="16" fill="#e9c3a0"/>
+            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
+            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#3a5f9a"/>
+            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#e9c3a0"/>
+            <g fill="#2f2a26">
+              <circle cx="26" cy="30" r="8"/>
+              <circle cx="38" cy="24" r="9"/>
+              <circle cx="52" cy="25" r="9"/>
+              <circle cx="60" cy="33" r="8"/>
+              <circle cx="22" cy="40" r="6"/>
+              <circle cx="63" cy="41" r="6"/>
+            </g>
+            <circle cx="34" cy="43" r="2.4" fill="#3b2a1e"/>
+            <circle cx="50" cy="43" r="2.4" fill="#3b2a1e"/>
+            <circle cx="30" cy="49" r="2.8" fill="#f4a9a0" opacity="0.55"/>
+            <circle cx="54" cy="49" r="2.8" fill="#f4a9a0" opacity="0.55"/>
+            <path d="M39 50 q3 3 6 0" stroke="#a8632a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- 질문 목록 -->
+    <div class="qna" id="qna">
+      <div class="q-card" onclick="toggleQ(this)">
+        <div class="q-head">
+          <div class="qnum">1</div>
+          <div class="qtext">경기예고 미술과를 준비하면서 가장 힘들었던 점과, 그걸 어떻게 극복했는지 알려주세요.</div>
+          <div class="q-arrow">&#9662;</div>
+        </div>
+        <div class="q-answer"></div>
+      </div>
+      <div class="q-card" onclick="toggleQ(this)">
+        <div class="q-head">
+          <div class="qnum">2</div>
+          <div class="qtext">입시 준비할 때 꼭 필요하다고 느낀 공부/실기 습관이 있다면 무엇인가요?</div>
+          <div class="q-arrow">&#9662;</div>
+        </div>
+        <div class="q-answer"></div>
+      </div>
+      <div class="q-card" onclick="toggleQ(this)">
+        <div class="q-head">
+          <div class="qnum">3</div>
+          <div class="qtext">중학교 때의 본인 실력과 지금을 비교했을 때, 가장 크게 성장한 부분은 무엇인가요?</div>
+          <div class="q-arrow">&#9662;</div>
+        </div>
+        <div class="q-answer"></div>
+      </div>
+      <div class="q-card" onclick="toggleQ(this)">
+        <div class="q-head">
+          <div class="qnum">4</div>
+          <div class="qtext">경기예고 미술과를 준비하면서 “이건 미리 알았으면 좋았을 텐데”라고 느꼈던 점이 있다면 무엇인가요?</div>
+          <div class="q-arrow">&#9662;</div>
+        </div>
+        <div class="q-answer"></div>
+      </div>
+      <div class="q-card" onclick="toggleQ(this)">
+        <div class="q-head">
+          <div class="qnum">5</div>
+          <div class="qtext">마지막으로, 지금 경기예고를 꿈꾸는 후배들에게 해주고 싶은 한마디 부탁드립니다.</div>
+          <div class="q-arrow">&#9662;</div>
+        </div>
+        <div class="q-answer"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+<script>
+  var lineup = document.getElementById('lineup');
+  var qna    = document.getElementById('qna');
+  var hint   = document.getElementById('hint');
+
+  // 캐릭터별 답변 (질문 1~5 순서). 아직 없으면 null.
+  var ANSWERS = [
+    // 1번 · 단발 여학생
+    [
+      "가장 힘들었던 건 3학년 1학기 공부였어. 올 A를 받아야 안정적으로 들어올 수 있는 상황이어서 악착같이 했지. 같이 경기예고를 입시 중인 친구들이 있었는데 그 친구들이 공부를 다 잘했어서, ‘여기서 나만 떨어지면 진짜 쪽팔리겠다’ 이 생각 하나로 열심히 했던 것 같아 ㅋㅋ",
+      "무조건 미리미리 하자 ㅠ 숙제 바로바로 하는 습관 무조건.. 그리고 피드백 무조건 적어두기. 시험 보기 전에 실기 메모 한 번씩 슥 훑으면 마음이 안정이 됐던 것 같기도 해.",
+      "단연 실기 실력이지. 다른 친구들이 모두 그림을 잘 그리니까 뒤쳐지지 않도록 더욱 열심히 했던 것 같아.",
+      "미대 입시 전형하고, 책 많이 읽어두는 거. 중3 2학기에 결과가 나오잖아, 합격하고 팽팽 놀았던 것 같은데 그 시간에 책을 읽었으면 어땠을까 싶어.. 그리고 미대 입시 전형을 미리 아는 건, 지금 와서 정보를 얻으려니까 너무 많기도 하고 정신도 없어서, 미리 미대에 대해 공부하고 자신의 방향에 맞는 공부 방향을 먼저 계획하고 들어왔다면 공부가 더 수월했을 것 같아.",
+      "절대 포기하지 말고 끝까지 닿을 수 있는 정도까지 한번 해보면 분명 좋은 결과가 나올 거야. 화이팅!!"
+    ],
+    null, // 2번
+    null, // 3번
+    null  // 4번
+  ];
+
+  var chars = Array.prototype.slice.call(document.querySelectorAll('.char'));
+  var answerEls = Array.prototype.slice.call(document.querySelectorAll('.q-answer'));
+
+  function loadAnswers(index) {
+    var set = ANSWERS[index];
+    answerEls.forEach(function (el, i) {
+      var text = set && set[i];
+      if (text) {
+        el.textContent = text;
+        el.classList.remove('empty');
+      } else {
+        el.textContent = "아직 답변이 준비되지 않았어요.";
+        el.classList.add('empty');
+      }
+      el.parentElement.classList.remove('open'); // 전환 시 모두 접기
+    });
+  }
+
+  function toggleQ(card) {
+    card.classList.toggle('open');
+  }
+
+  function resetTransforms() {
+    document.querySelectorAll('.char').forEach(function (c) {
+      c.style.transform = '';
+    });
+  }
+
+  function pick(btn) {
+    var wasActive = btn.classList.contains('active');
+
+    // 초기화: 선택 해제 + 위치 복귀
+    document.querySelectorAll('.char').forEach(function (c) { c.classList.remove('active'); });
+    resetTransforms();
+
+    if (wasActive) {
+      // 같은 캐릭터 다시 누르면 원래대로
+      lineup.classList.remove('has-selection');
+      qna.classList.remove('show');
+      hint.style.opacity = '1';
+      return;
+    }
+
+    // 선택한 캐릭터의 답변 로드
+    loadAnswers(chars.indexOf(btn));
+
+    // 선택된 캐릭터를 가운데로 이동 (레이아웃은 유지, transform 으로 부드럽게)
+    var lineRect = lineup.getBoundingClientRect();
+    var btnRect  = btn.getBoundingClientRect();
+    var centerX  = lineRect.left + lineRect.width / 2;
+    var btnCenter = btnRect.left + btnRect.width / 2;
+    var delta = centerX - btnCenter;
+
+    btn.classList.add('active');
+    // 리플로우 후 트랜지션 적용
+    requestAnimationFrame(function () {
+      btn.style.transform = 'translateX(' + delta + 'px) scale(1.18)';
+    });
+
+    lineup.classList.add('has-selection');
+    qna.classList.add('show');
+    hint.style.opacity = '0';
+  }
+
+  // 화면 크기 변경 시 선택된 캐릭터 위치 재계산
+  window.addEventListener('resize', function () {
+    var active = document.querySelector('.char.active');
+    if (!active) return;
+    active.style.transform = '';
+    var lineRect = lineup.getBoundingClientRect();
+    var btnRect  = active.getBoundingClientRect();
+    var delta = (lineRect.left + lineRect.width / 2) - (btnRect.left + btnRect.width / 2);
+    active.style.transform = 'translateX(' + delta + 'px) scale(1.18)';
+  });
+</script>
+<script src="scene.js"></script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    overflow-x: hidden;
+  }
+
+  /* 첫 화면은 배경을 선명하게 그대로 (공통 반투명 막 해제) */
+  .scene::after { display: none; }
+  .scene-petal { opacity: 0.7; }
+
+  /* ===== 타이틀 ===== */
+  header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 56px 16px 8px;
+  }
+  .emblem {
+    display: inline-block;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(11px, 2vw, 14px);
+    letter-spacing: 4px;
+    color: #8b5e3c;
+    padding: 6px 18px;
+    border: 1px solid rgba(139,94,60,0.45);
+    border-radius: 999px;
+    background: rgba(255,253,248,0.75);
+    margin-bottom: 16px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: clamp(36px, 8vw, 76px);
+    color: #3b2a1e;
+    letter-spacing: 6px;
+    line-height: 1.3;
+    text-shadow: 0 2px 0 rgba(255,253,248,0.8);
+  }
+  .tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(11px, 2vw, 16px);
+    color: #8b5e3c;
+    letter-spacing: 3px;
+  }
+
+  /* ===== 메뉴 버튼 영역 ===== */
+  main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 26px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .mc-btn {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+    padding: 26px 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(20px, 4vw, 28px);
+    color: #3b2a1e;
+    text-align: center;
+    background: rgba(255,253,248,0.88);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(139,94,60,0.4);
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(59,42,30,0.14);
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+  .mc-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59,42,30,0.22);
+    background: rgba(255,253,248,0.97);
+  }
+  .mc-btn:active { transform: translateY(1px); }
+
+  .mc-btn .sub {
+    display: block;
+    margin-top: 8px;
+    font-size: clamp(12px, 2vw, 15px);
+    color: rgba(59,42,30,0.7);
+  }
+
+  .mc-btn.serif { font-family: 'Nanum Myeongjo', serif; font-weight: 800; }
+  .mc-btn .school-ico {
+    display: block;
+    margin-top: 8px;
+    font-size: clamp(24px, 4.6vw, 30px);
+  }
+
+  /* 동그라미 버튼 */
+  .mc-btn.round {
+    width: 96px;
+    height: 96px;
+    padding: 0;
+    margin: 12px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(18px, 3.5vw, 24px);
+    transition: width 0.5s ease, border-radius 0.5s ease, background 0.5s ease, color 0.5s ease, filter 0.15s, box-shadow 0.15s;
+    z-index: 3;
+  }
+  body.etc-open .mc-btn.round {
+    width: 100%;
+    border-radius: 16px;
+    background: #4a6f96;
+    color: #fff;
+    border-color: rgba(0,0,0,0.2);
+  }
+
+  /* 서랍 메뉴 */
+  .drawer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s ease;
+  }
+  body.etc-open .drawer { max-height: 420px; }
+
+  .drawer-item {
+    width: 100%;
+    padding: 18px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(16px, 3vw, 22px);
+    color: #3b2a1e;
+    text-align: center;
+    background: rgba(255,253,248,0.9);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(139,94,60,0.4);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-24px);
+    transition: transform 0.4s ease, opacity 0.4s ease, filter 0.15s;
+  }
+  .drawer-item:hover { filter: brightness(1.05); }
+  body.etc-open .drawer-item { opacity: 1; transform: translateY(0); }
+  body.etc-open .drawer-item:nth-child(1) { transition-delay: 0.3s; }
+  body.etc-open .drawer-item:nth-child(2) { transition-delay: 0.5s; }
+  body.etc-open .drawer-item:nth-child(3) { transition-delay: 0.7s; }
+
+  /* 하단 버전 표시 */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 16px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px;
+    color: rgba(59,42,30,0.75);
+  }
+
+  /* ===== 학교 입장 전환 ===== */
+  /* 배경이 학교 건물 현관을 향해 줌인 */
+  body.enter-school .scene {
+    transition: transform 1.05s cubic-bezier(0.55, 0, 0.75, 0.4);
+    transform: scale(7);
+    transform-origin: 50% 81%;
+  }
+  /* UI는 살짝 커지면서 사라짐 (지나쳐 가는 느낌) */
+  header, main, footer {
+    transition: transform 0.7s ease, opacity 0.7s ease;
+  }
+  body.enter-school header,
+  body.enter-school main,
+  body.enter-school footer {
+    transform: scale(1.18);
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* 마지막에 따뜻한 빛으로 덮이며 다음 화면으로 */
+  .enter-veil {
+    position: fixed; inset: 0;
+    background: #f3e7d0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9;
+    transition: opacity 0.45s ease 0.6s;
+  }
+  body.enter-school .enter-veil { opacity: 1; }
+
+  /* 뒤로가기 복원 시 전환 되감김 방지 — 모든 전환을 순간 정지 */
+  body.no-anim .scene,
+  body.no-anim .enter-veil,
+  body.no-anim header,
+  body.no-anim main,
+  body.no-anim footer {
+    transition: none !important;
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="emblem">경기예술고등학교</div>
+    <h1 class="logo">경기 예고</h1>
+    <span class="tag">예술이 자라는 교정</span>
+  </header>
+
+  <main>
+    <button class="mc-btn serif" onclick="enterSchool('arts.html')">
+      미술과 소개
+      <span class="school-ico">🎨</span>
+    </button>
+
+    <button class="mc-btn serif" id="admBtn" onclick="enterSchool('admission-menu.html')">
+      입시 정보
+      <span class="school-ico">📚</span>
+    </button>
+
+    <button class="mc-btn round" id="etcBtn" onclick="toggleEtc()">
+      그 외
+    </button>
+
+    <div class="drawer">
+      <button class="drawer-item" onclick="location.href='facility.html'">시설 사진</button>
+      <button class="drawer-item" onclick="location.href='uniform.html'">교복</button>
+    </div>
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+  <div class="enter-veil" aria-hidden="true"></div>
+
+<script src="scene.js"></script>
+<script>
+  function toggleEtc() {
+    document.body.classList.toggle('etc-open');
+  }
+
+  // 학교로 들어가는 전환 후 페이지 이동
+  var entering = false;
+  function enterSchool(url) {
+    if (entering) return;
+    entering = true;
+    document.body.classList.add('enter-school');
+    setTimeout(function () { location.href = url; }, 1050);
+  }
+
+  // 뒤로가기로 돌아왔을 때 전환 상태를 애니메이션 없이 즉시 초기화
+  window.addEventListener('pageshow', function () {
+    document.body.classList.add('no-anim');
+    document.body.classList.remove('enter-school');
+    entering = false;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        document.body.classList.remove('no-anim');
+      });
+    });
+  });
+</script>
+</body>
+</html>

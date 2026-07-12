@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>방과후 활동 · 경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #e6d8c3;
+    border-bottom: 1px solid rgba(139,94,60,0.3);
+    padding: 14px 18px;
+  }
+  .topbar .back {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px; color: #2b2b2b;
+    background: none; border: none; cursor: pointer; padding: 6px 10px;
+  }
+  .topbar .title {
+    font-size: 26px; color: #2b2b2b;
+    text-shadow: none;
+  }
+  .topbar .spacer { width: 44px; }
+
+  /* 헤더 타이틀 */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 16px 10px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(26px, 6vw, 44px);
+    color: #3b2a1e;
+    text-shadow: none;
+  }
+  .tag {
+    display: inline-block; margin-top: 14px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(9px, 2vw, 16px);
+    color: #b8894a; text-shadow: none;
+    transform: rotate(-5deg);
+  }
+
+  /* 학년 아코디언 */
+  main {
+    position: relative; z-index: 1;
+    flex: 1; width: 100%;
+    max-width: 720px; margin: 0 auto;
+    padding: 24px 24px 60px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .grade-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%;
+    padding: 20px 22px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(20px, 4vw, 26px);
+    color: #3b2a1e; text-align: left;
+    text-shadow: none;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+  }
+  .grade-btn:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,42,30,0.2); }
+  .grade-btn:active { transform: translateY(1px); }
+
+  .grade-btn .ico {
+    font-size: 28px;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+  }
+  .grade-btn .arrow {
+    margin-left: auto;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px; color: #b8894a;
+    text-shadow: none;
+    transition: transform 0.15s;
+  }
+  .grade-item.open .grade-btn .arrow { transform: rotate(90deg); }
+
+  .c1 { background: #fffdf8; }
+  .c2 { background: #fffdf8; }
+  .c3 { background: #fffdf8; }
+
+  /* 펼쳐지는 상세 패널 */
+  .grade-detail {
+    display: none;
+    margin-top: -4px;
+    padding: 20px 24px;
+    background: #fffdf8;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    border-top: none;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    font-size: clamp(16px, 2.8vw, 19px);
+    line-height: 1.7;
+    color: #3b2a1e;
+    text-shadow: none;
+  }
+  .grade-item.open .grade-detail { display: block; }
+
+  /* 학기 칸 */
+  .sem {
+    padding: 14px 16px;
+    background: rgba(139,94,60,0.06);
+    border: 1px dashed rgba(139,94,60,0.35);
+    border-radius: 8px;
+  }
+  .sem + .sem { margin-top: 12px; }
+  .sem .sem-title {
+    color: #b8894a;
+    margin-bottom: 6px;
+  }
+  .sem .sem-body { min-height: 28px; }
+  .sem .blue { color: #4a6f96; }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px; color: #3b2a1e;
+    text-shadow: none;
+  }
+</style>
+</head>
+<body data-scene="classroom" data-chalk="">
+
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <button class="back" onclick="location.href='arts.html'">&lt;</button>
+    <div class="title">방과후 활동</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">방과후 활동</h1>
+  </header>
+
+  <main>
+    <div class="grade-item">
+      <button class="grade-btn c1" onclick="toggleGrade(this)">
+        1학년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="grade-detail">
+        <div class="sem">
+          <div class="sem-title">1학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">드로잉</span><br>
+            목요일, 금요일: <span class="blue">전공 로테이션</span>
+          </div>
+        </div>
+        <div class="sem">
+          <div class="sem-title">2학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">드로잉</span><br>
+            목요일, 금요일: <span class="blue">전공 선택</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grade-item">
+      <button class="grade-btn c2" onclick="toggleGrade(this)">
+        2학년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="grade-detail">
+        <div class="sem">
+          <div class="sem-title">1학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">전공 선택</span><br>
+            목요일, 금요일: <span class="blue">드로잉</span>
+          </div>
+        </div>
+        <div class="sem">
+          <div class="sem-title">2학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">전공 선택</span><br>
+            목요일, 금요일: <span class="blue">드로잉</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grade-item">
+      <button class="grade-btn c3" onclick="toggleGrade(this)">
+        3학년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="grade-detail">
+        <div class="sem">
+          <div class="sem-title">1학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">전공 선택</span><br>
+            목요일, 금요일: <span class="blue">드로잉</span>
+          </div>
+        </div>
+        <div class="sem">
+          <div class="sem-title">2학기</div>
+          <div class="sem-body">
+            월, 화, 수요일: <span class="blue">전공 선택</span><br>
+            목요일, 금요일: <span class="blue">드로잉</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+<script>
+  function toggleGrade(btn) {
+    btn.parentElement.classList.toggle('open');
+  }
+</script>
+<script src="scene.js"></script>
+</body>
+</html>

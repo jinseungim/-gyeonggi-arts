@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학생 작품 소개 · 경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #e6d8c3;
+    border-bottom: 1px solid rgba(139,94,60,0.3);
+    padding: 14px 18px;
+  }
+  .topbar .back {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px; color: #2b2b2b;
+    background: none; border: none; cursor: pointer; padding: 6px 10px;
+  }
+  .topbar .title {
+    font-size: 26px; color: #2b2b2b;
+    text-shadow: none;
+  }
+  .topbar .spacer { width: 44px; }
+
+  /* 헤더 타이틀 */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 16px 10px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(26px, 6vw, 44px);
+    color: #3b2a1e;
+    font-weight: 800;
+    letter-spacing: 5px;
+    text-shadow: none;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(12px, 2.2vw, 16px);
+    color: #b8894a;
+    letter-spacing: 3px;
+  }
+
+  main {
+    position: relative; z-index: 1;
+    flex: 1; width: 100%;
+    max-width: 860px; margin: 0 auto;
+    padding: 24px 24px 60px;
+  }
+
+  /* 기수 섹션 */
+  .gen-section { margin-bottom: 36px; }
+  .gen-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 800;
+    color: #3b2a1e;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+    border-bottom: 2px solid rgba(139,94,60,0.35);
+  }
+  .gen-title .badge {
+    display: inline-block;
+    font-size: 13px; color: #b8894a;
+    margin-left: 10px;
+    letter-spacing: 2px;
+  }
+
+  /* 작품 그리드 */
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .work-card {
+    background: #fffdf8;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .work-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,42,30,0.2); }
+  .work-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #1a1a1a;
+  }
+
+  /* 이미지 슬라이드(갤러리) */
+  .work-slider {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+  .work-slider .slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.35s ease;
+  }
+  .work-slider .slides img {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+  .work-slider .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px; height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    font-size: 18px;
+    line-height: 34px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.15s;
+  }
+  .work-slider .nav:hover { background: rgba(0,0,0,0.7); }
+  .work-slider .nav.prev { left: 8px; }
+  .work-slider .nav.next { right: 8px; }
+  .work-slider .dots {
+    position: absolute;
+    bottom: 10px; left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    z-index: 2;
+  }
+  .work-slider .dots span {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.45);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .work-slider .dots span.active {
+    background: #fff;
+    transform: scale(1.25);
+  }
+
+  /* 작품 캡션 */
+  .work-caption {
+    padding: 16px 18px 18px;
+    text-align: center;
+  }
+  .work-caption .work-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(18px, 3.2vw, 22px);
+    font-weight: 800;
+    color: #3b2a1e;
+  }
+  .work-caption .work-sub {
+    margin-top: 6px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(13px, 2.4vw, 16px);
+    color: #b8894a;
+  }
+  .work-caption .work-desc {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(139,94,60,0.25);
+    font-size: clamp(13px, 2.3vw, 15px);
+    line-height: 1.8;
+    color: rgba(59,42,30,0.85);
+  }
+
+  /* 빈 칸 (작품 준비 중) */
+  .work-empty {
+    grid-column: 1 / -1;
+    padding: 36px 18px;
+    text-align: center;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(14px, 2.6vw, 17px);
+    color: rgba(59,42,30,0.5);
+    background: #fffdf8;
+    border: 1px dashed rgba(139,94,60,0.4);
+    border-radius: 12px;
+  }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px; color: #3b2a1e;
+    text-shadow: none;
+  }
+
+  @media (max-width: 560px) {
+    .works-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-scene="classroom" data-chalk="">
+
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <button class="back" onclick="location.href='arts.html'">&lt;</button>
+    <div class="title">학생 작품 소개</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">학생 작품</h1>
+    <p class="subtitle">미술전시 작품</p>
+  </header>
+
+  <main>
+    <section class="gen-section">
+      <h2 class="gen-title">23기<span class="badge">STUDENT WORKS</span></h2>
+      <div class="works-grid">
+        <div class="work-card">
+          <img src="images/works-23-01.jpg" alt="빛의 자리">
+          <div class="work-caption">
+            <div class="work-title">빛의 자리</div>
+            <div class="work-sub">우리는 누구를 잊고 살아가는가?</div>
+            <div class="work-desc">
+              빛은 한곳에 머물지 않고 스며들며 다른 존재 안에 남는다.<br>
+              보이지 않아도, 오래도록 서로를 밝힌다.<br>
+              우리가 밝히는 그들은 당신의 친구일 수도,<br>
+              당신의 어머니일 수도, 당신일 수도
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <img src="images/works-23-02.jpg" alt="수호의 경계에서">
+          <div class="work-caption">
+            <div class="work-title">수호의 경계에서</div>
+            <div class="work-desc">
+              이 작품은 눈에 보이지 않는 자연의 흐름과 진정한 가치를 지키는 수호자의 존재를 통해,<br>
+              인간이 잊고 있는 소중한 가치의 의미를 전하고자 한다.<br>
+              또한 탐욕으로 그 가치를 해치는 자는 결국 그 경계에서 받아들여질 수 없음을 표현하였다.
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <img src="images/works-23-03.jpg" alt="자화상">
+          <div class="work-caption">
+            <div class="work-desc">
+              사회 문제를 풍자하는 대신 나 자신을 주제로 자화상을 그려,<br>
+              내가 좋아하는 것들과 함께 취향과 일상을 솔직하게 표현했다.<br>
+              이 작품에는 있는 그대로의 나를 긍정적으로 바라보려는 의미와,<br>
+              그림을 그리며 느낀 즐겁고 행복한 감정이 담겨 있다.
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <img src="images/works-23-04.jpg" alt="이름">
+          <div class="work-caption">
+            <div class="work-title">이름</div>
+            <div class="work-desc">
+              이 작품은 가족이라는 이름이 사람들을 이어주는 동시에 폭력과 상처까지 묶어두는 구속이 될 수 있음을 표현하였다.<br>
+              이를 통해 우리가 당연하게 여겨온 가족의 의미와 관계를 다시 생각해 보기를 바란다.
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <div class="work-slider" data-slider>
+            <div class="slides">
+              <img src="images/works-23-bunsik-1.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-2.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-3.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-4.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-5.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-6.jpg" alt="분식특공대">
+            </div>
+            <button class="nav prev" type="button" aria-label="이전">&lt;</button>
+            <button class="nav next" type="button" aria-label="다음">&gt;</button>
+            <div class="dots"></div>
+          </div>
+          <div class="work-caption">
+            <div class="work-title">분식특공대</div>
+            <div class="work-desc">
+              작품 설명을 입력하세요.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gen-section">
+      <h2 class="gen-title">22기<span class="badge">STUDENT WORKS</span></h2>
+      <div class="works-grid">
+        <div class="work-card">
+          <img src="images/works-22-01.jpg" alt="cradle to the grave">
+          <div class="work-caption">
+            <div class="work-title">cradle to the grave</div>
+            <div class="work-desc">
+              이 작품은 타인과의 관계에 따라 달라지는 나의 태도와 심리 상태를 생명체의 크기, 표정, 색의 변화를 통해 표현하였다.<br>
+              또한 진정한 모습은 신뢰와 편안함을 느끼는 사람들에게만 드러난다는 점을 보여주고자 하였다.
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <div class="work-slider" data-slider>
+            <div class="slides">
+              <img src="images/works-22-ego-1.jpg" alt="EGO">
+              <img src="images/works-22-ego-2.jpg" alt="EGO">
+              <img src="images/works-22-ego-3.jpg" alt="EGO">
+              <img src="images/works-22-ego-4.jpg" alt="EGO">
+              <img src="images/works-22-ego-5.jpg" alt="EGO">
+            </div>
+            <button class="nav prev" type="button" aria-label="이전">&lt;</button>
+            <button class="nav next" type="button" aria-label="다음">&gt;</button>
+            <div class="dots"></div>
+          </div>
+          <div class="work-caption">
+            <div class="work-title">접속오류</div>
+            <div class="work-desc">
+              외계 존재에게 내면과 신체를 잠식당하며 정체성의 혼란을 겪는 이들의 이야기를 담은 작품이다.<br>
+              쯔꾸르 공포게임에서 영감을 받았으며, 이 세계관은 3D 모델링, 영상, 일러스트, 굿즈 등 다양한 매체로 시각화되어 전개됩니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+<script src="scene.js"></script>
+<script>
+  document.querySelectorAll('[data-slider]').forEach(function (slider) {
+    var track = slider.querySelector('.slides');
+    var imgs = slider.querySelectorAll('.slides img');
+    var dotsWrap = slider.querySelector('.dots');
+    var idx = 0;
+
+    imgs.forEach(function (_, i) {
+      var dot = document.createElement('span');
+      if (i === 0) dot.classList.add('active');
+      dot.addEventListener('click', function () { go(i); });
+      dotsWrap.appendChild(dot);
+    });
+    var dots = dotsWrap.querySelectorAll('span');
+
+    function go(n) {
+      idx = (n + imgs.length) % imgs.length;
+      track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+    }
+
+    slider.querySelector('.prev').addEventListener('click', function () { go(idx - 1); });
+    slider.querySelector('.next').addEventListener('click', function () { go(idx + 1); });
+  });
+</script>
+</body>
+</html>

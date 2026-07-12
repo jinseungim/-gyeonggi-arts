@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실기 기출 · 경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #e6d8c3;
+    border-bottom: 1px solid rgba(139,94,60,0.3);
+    padding: 14px 18px;
+  }
+  .topbar .back {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px; color: #2b2b2b;
+    background: none; border: none; cursor: pointer; padding: 6px 10px;
+  }
+  .topbar .title {
+    font-size: 26px; color: #2b2b2b;
+    text-shadow: none;
+  }
+  .topbar .spacer { width: 44px; }
+
+  /* 헤더 타이틀 */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 16px 10px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(26px, 6vw, 44px);
+    color: #3b2a1e;
+    text-shadow: none;
+  }
+  .tag {
+    display: inline-block; margin-top: 14px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(9px, 2vw, 16px);
+    color: #b8894a; text-shadow: none;
+    transform: rotate(-5deg);
+  }
+
+  /* 연도 아코디언 */
+  main {
+    position: relative; z-index: 1;
+    flex: 1; width: 100%;
+    max-width: 720px; margin: 0 auto;
+    padding: 24px 24px 60px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .year-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%;
+    padding: 20px 22px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(20px, 4vw, 26px);
+    color: #3b2a1e; text-align: left;
+    text-shadow: none;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+  }
+  .year-btn:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,42,30,0.2); }
+  .year-btn:active { transform: translateY(1px); }
+
+  .year-btn .ico {
+    font-size: 28px;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+  }
+  .year-btn .arrow {
+    margin-left: auto;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px; color: #b8894a;
+    text-shadow: none;
+    transition: transform 0.15s;
+  }
+  .year-item.open .year-btn .arrow { transform: rotate(90deg); }
+
+  .c1 { background: #fffdf8; }
+  .c2 { background: #fffdf8; }
+  .c3 { background: #fffdf8; }
+  .c4 { background: #fffdf8; }
+
+  /* 펼쳐지는 상세 패널 */
+  .year-detail {
+    display: none;
+    margin-top: -4px;
+    padding: 20px 24px;
+    background: #fffdf8;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    border-top: none;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+  }
+  .year-item.open .year-detail { display: block; }
+
+  .year-detail .row {
+    font-size: clamp(17px, 3vw, 21px);
+    line-height: 1.6;
+    color: #3b2a1e;
+    text-shadow: none;
+    padding: 10px 0;
+    border-bottom: 2px dashed rgba(255,255,255,0.2);
+  }
+  .year-detail .row:last-child { border-bottom: none; }
+  .year-detail .label {
+    color: #b8894a;
+    text-shadow: none;
+    margin-right: 8px;
+  }
+
+  /* <조건> 목록 */
+  .year-detail .cond {
+    list-style: none;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.3);
+    border: 2px dashed rgba(255,255,255,0.25);
+    font-size: clamp(15px, 2.6vw, 18px);
+  }
+  .year-detail .cond::before {
+    content: "<조건>";
+    display: block;
+    color: #b8894a;
+    text-shadow: none;
+    margin-bottom: 6px;
+  }
+  .year-detail .cond li::before { content: "▸ "; color: #b8894a; }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px; color: #3b2a1e;
+    text-shadow: none;
+  }
+</style>
+</head>
+<body data-scene="classroom" data-chalk="">
+
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <button class="back" onclick="location.href='admission-menu.html'">&lt;</button>
+    <div class="title">실기 기출</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">실기 기출</h1>
+  </header>
+
+  <main>
+    <div class="year-item">
+      <button class="year-btn c1" onclick="toggleYear(this)">
+        2026년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="year-detail">
+        <div class="row"><span class="label">절지 사이즈:</span>4절지</div>
+        <div class="row"><span class="label">시간:</span>3시간 30분</div>
+        <div class="row">
+          <span class="label">내용:</span>
+          파란색 플라스틱 의자 위에 눕혀진 빨간색 플라스틱 의자가 실제 정물로 제시,
+          전선릴이 정확한 사이즈와 함께 이미지로 제시
+          <ul class="cond">
+            <li>사실적으로 표현하시오</li>
+            <li>의자는 보이는 대로 표현하시오</li>
+            <li>제시 이미지 구성은 자유 (전선 활용)</li>
+            <li>배경 바닥 금지</li>
+            <li>그림자를 표현하시오</li>
+            <li>화지 방향은 자유</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="year-item">
+      <button class="year-btn c2" onclick="toggleYear(this)">
+        2025년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="year-detail">
+        <div class="row"><span class="label">절지 사이즈:</span>4절지</div>
+        <div class="row"><span class="label">시간:</span>3시간 30분</div>
+        <div class="row">
+          <span class="label">내용:</span>
+          손으로 캠핑 랜턴을 들고 있는 상황을 사실적으로 표현하시오
+          <ul class="cond">
+            <li>양손을 표현하되 한손은 캠핑랜턴을 들고 있어야 함</li>
+            <li>램프는 빛이 들어와 있고 빛 표현을 위한 배경 표현은 자유</li>
+            <li>본인 시점으로 표현하시오</li>
+            <li>걸이용 철사 및 각도 자유</li>
+            <li>화지 방향 자유</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="year-item">
+      <button class="year-btn c3" onclick="toggleYear(this)">
+        2024년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="year-detail">
+        <div class="row"><span class="label">절지 사이즈:</span>4절지</div>
+        <div class="row"><span class="label">시간:</span>3시간 30분</div>
+        <div class="row">
+          <span class="label">내용:</span>
+          제시 정물: 배드민턴 셔틀콕, 호일접시, 1회용 투명 플라스틱 컵(탁구공이 들어간 상태), 빨간 파프리카
+          <ul class="cond">
+            <li>컵 안에 탁구공이 들어간 것을 표현하시오</li>
+            <li>바닥에 놓아 자유롭게 배치하시오</li>
+            <li>화지 방향 가로</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="year-item">
+      <button class="year-btn c4" onclick="toggleYear(this)">
+        2023년
+        <span class="arrow">&gt;</span>
+      </button>
+      <div class="year-detail">
+        <div class="row"><span class="label">절지 사이즈:</span>4절지</div>
+        <div class="row"><span class="label">시간:</span>3시간 30분</div>
+        <div class="row">
+          <span class="label">내용:</span>
+          제시 정물: 삼다수 500ml, 비닐에 쌓인 사과, 정리함 바구니, 오너먼트, 흰 수건
+          <ul class="cond">
+            <li>자유롭게 배치</li>
+            <li>배경 바닥 금지</li>
+            <li>그림자 표현 가능</li>
+            <li>주어진 정물만 그릴 것</li>
+            <li>형태 변형 금지</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+<script>
+  function toggleYear(btn) {
+    btn.parentElement.classList.toggle('open');
+  }
+</script>
+<script src="scene.js"></script>
+</body>
+</html>

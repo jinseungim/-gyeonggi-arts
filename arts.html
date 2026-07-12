@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미술과 소개 · 경기 예고</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #3b2a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5efe4;
+    background-attachment: fixed;
+    overflow-x: hidden;
+    animation: room-enter 0.7s ease both;
+  }
+  /* 학교에 들어온 직후 — 밝은 빛에서 서서히 또렷해짐 */
+  @keyframes room-enter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* 떨어지는 벚꽃잎 */
+  .petal {
+    position: fixed; top: -20px; width: 14px; height: 14px;
+    background: #b8894a; border-radius: 60% 0 60% 0;
+    opacity: 0.85; z-index: 0; pointer-events: none;
+    animation: fall linear infinite;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-20px) translateX(0) rotate(0deg); }
+    100% { transform: translateY(110vh) translateX(60px) rotate(360deg); }
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #e6d8c3;
+    border-bottom: 1px solid rgba(139,94,60,0.3);
+    padding: 14px 18px;
+  }
+  .topbar .back {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px; color: #2b2b2b;
+    background: none; border: none; cursor: pointer; padding: 6px 10px;
+  }
+  .topbar .title {
+    font-size: 26px; color: #2b2b2b;
+    text-shadow: none;
+  }
+  .topbar .spacer { width: 44px; }
+
+  /* 헤더 타이틀 */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 16px 10px;
+  }
+  .logo {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(22px, 6vw, 52px);
+    color: #3b2a1e;
+    font-weight: 800;
+    letter-spacing: 5px;
+    text-shadow: none;
+  }
+  .tag {
+    display: inline-block; margin-top: 14px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(9px, 2vw, 16px);
+    color: #b8894a; text-shadow: none;
+    transform: rotate(-5deg);
+  }
+
+  /* 메뉴 그리드 */
+  main {
+    position: relative; z-index: 1;
+    flex: 1; width: 100%;
+    max-width: 760px; margin: 0 auto;
+    padding: 24px 24px 60px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .mc-card {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 150px;
+    padding: 24px 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(18px, 3.5vw, 26px);
+    color: #3b2a1e; text-align: center;
+    text-shadow: none;
+    background: #fffdf8;
+    border: 1px solid rgba(139,94,60,0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(59,42,30,0.12);
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+  }
+  .mc-card:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,42,30,0.2); }
+  .mc-card:active { transform: translateY(1px); }
+
+  .mc-card .num {
+    position: absolute; top: 10px; left: 12px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px; color: #b8894a;
+    text-shadow: none;
+  }
+  .mc-card .ico {
+    font-size: 38px; margin-bottom: 12px;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+  }
+  .mc-card .sub {
+    display: block; margin-top: 8px;
+    font-size: clamp(11px, 2vw, 14px);
+    color: rgba(59,42,30,0.7);
+    text-shadow: none;
+  }
+
+  /* 색상 */
+  .c1 { background: #fffdf8; }
+  .c2 { background: #fffdf8; }
+  .c3 { background: #fffdf8; }
+  .c4 { background: #fffdf8; }
+  .c5 { background: #fffdf8; }
+
+  /* 5번째 카드는 가운데로 넓게 */
+  .mc-card.wide { grid-column: 1 / -1; }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 10px; color: #3b2a1e;
+    text-shadow: none;
+  }
+
+  @media (max-width: 520px) {
+    main { grid-template-columns: 1fr; }
+    .mc-card.wide { grid-column: auto; }
+  }
+</style>
+</head>
+<body data-scene="classroom" data-chalk="">
+
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <button class="back" onclick="location.href='index.html'">&lt;</button>
+    <div class="title">미술과 소개</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">미술과</h1>
+  </header>
+
+  <main>
+    <button class="mc-card c1" onclick="location.href='arts-works.html'">
+      <span class="num">1</span>
+      학생 작품 소개
+    </button>
+
+    <button class="mc-card c2" onclick="location.href='arts-activities.html'">
+      <span class="num">2</span>
+      경기예고 미술 활동들
+    </button>
+
+    <button class="mc-card c3" onclick="location.href='arts-majors.html'">
+      <span class="num">3</span>
+      각 전공별 소개
+    </button>
+
+    <button class="mc-card c4" onclick="location.href='arts-seniors.html'">
+      <span class="num">4</span>
+      선배가 전하는 말
+    </button>
+
+    <button class="mc-card c5 wide" onclick="location.href='arts-afterschool.html'">
+      <span class="num">5</span>
+      방과후 활동
+    </button>
+  </main>
+
+  <footer>v26.21 · ©경기예술고등학교</footer>
+
+<script src="scene.js"></script>
+</body>
+</html>
