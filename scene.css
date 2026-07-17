@@ -237,10 +237,14 @@
 }
 
 /* ===== 교실 배경 (학교 안) ===== */
-/* 벽 */
+/* 벽 — 첫 화면의 가을 노을빛(코랄·금빛)을 은은히 머금은 오후의 교실 */
 .scene--room .room-wall {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, #f6ecd8 0%, #f2e4c9 60%, #ecd9b4 100%);
+  background:
+    radial-gradient(120% 80% at 12% 22%, rgba(224,138,110,0.28) 0%, transparent 52%),
+    radial-gradient(120% 80% at 88% 20%, rgba(255,233,182,0.42) 0%, transparent 50%),
+    radial-gradient(140% 90% at 50% 100%, rgba(224,138,110,0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #f7ecd6 0%, #f3e3c6 55%, #ecd6ad 100%);
 }
 
 /* 나무 바닥 */
@@ -326,20 +330,46 @@
   transform: translate(-50%, -100%) rotate(-70deg);
 }
 
-/* 창문 — 안으로 들어오는 오후 햇살 */
+/* 창문 — 창밖으로 첫 화면과 같은 가을 노을 하늘, 그 위로 지는 낙엽 */
 .scene--room .room-window {
   position: absolute; top: 15%;
   width: clamp(90px, 13vw, 150px);
   height: clamp(120px, 19vw, 200px);
-  background: linear-gradient(160deg, #f7e7b8 0%, #eccf8d 100%);
+  overflow: hidden;
   border: 6px solid #8b5e3c;
   border-radius: 6px;
   box-shadow: 0 0 46px 10px rgba(238,196,104,0.45), inset 0 0 14px rgba(255,244,200,0.9);
 }
+/* 창밖 하늘 — index 첫 화면 하늘 그라데이션과 동일한 톤 */
+.scene--room .room-window .win-sky {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(120% 90% at 20% 88%, rgba(224,138,110,0.4) 0%, transparent 55%),
+    radial-gradient(110% 80% at 82% 14%, rgba(255,233,182,0.5) 0%, transparent 50%),
+    linear-gradient(180deg, #a7aec4 0%, #c3b0b4 24%, #dcb69f 50%, #edcf9f 76%, #f0dcb6 100%);
+}
+/* 창밖으로 떨어지는 낙엽 담는 영역 */
+.scene--room .room-window .win-leaves {
+  position: absolute; inset: 0; z-index: 1;
+  overflow: hidden;
+}
+.scene--room .room-window .win-leaf {
+  position: absolute; top: -14px;
+  width: 9px; height: 9px;
+  border-radius: 60% 0 60% 0;
+  opacity: 0.55;
+  animation: win-leaf-fall linear infinite;
+}
+@keyframes win-leaf-fall {
+  0%   { transform: translateY(-14px) translateX(0)     rotate(0deg);   opacity: 0; }
+  12%  { opacity: 0.55; }
+  100% { transform: translateY(220px)  translateX(26px)  rotate(320deg); opacity: 0.55; }
+}
+/* 창틀 십자살 — 하늘/낙엽 위로 보이도록 */
 .scene--room .room-window::before,
 .scene--room .room-window::after {
   content: '';
-  position: absolute; background: rgba(139,94,60,0.6);
+  position: absolute; z-index: 2; background: rgba(139,94,60,0.6);
 }
 .scene--room .room-window::before { left: 0; right: 0; top: 50%; height: 4px; }
 .scene--room .room-window::after  { top: 0; bottom: 0; left: 50%; width: 4px; }

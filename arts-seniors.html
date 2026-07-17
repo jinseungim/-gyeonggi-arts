@@ -66,36 +66,42 @@
 
   /* 캐릭터 4명 가운데 나열 */
   .lineup {
-    display: flex; justify-content: center; flex-wrap: nowrap;
-    gap: clamp(14px, 4vw, 34px);
+    display: flex; justify-content: center; align-items: flex-end; flex-wrap: nowrap;
+    gap: clamp(4px, 1.5vw, 16px);
   }
 
   .char {
     background: none; border: none; padding: 0; cursor: pointer;
-    display: flex; justify-content: center;
-    transition: transform 0.45s cubic-bezier(0.25,0.9,0.3,1), opacity 0.4s ease;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    transition: transform 0.75s cubic-bezier(0.25,0.9,0.3,1), opacity 0.5s ease;
     will-change: transform, opacity;
   }
-  .char .ring {
-    width: clamp(72px, 18vw, 110px);
-    height: clamp(72px, 18vw, 110px);
-    border-radius: 50%;
-    overflow: hidden;
-    background: #fffdf8;
-    border: 3px solid rgba(139,94,60,0.35);
-    box-shadow: 0 4px 12px rgba(59,42,30,0.15);
-    transition: border-color 0.3s, box-shadow 0.3s;
+  /* 의자에 앉은 전신 캐릭터 */
+  .char .figure {
+    position: relative; z-index: 1;
+    width: clamp(68px, 20vw, 138px);
+    line-height: 0;
+    filter: drop-shadow(0 8px 8px rgba(59,42,30,0.16));
+    transition: filter 0.3s, transform 0.3s;
   }
-  .char .ring svg { width: 100%; height: 100%; display: block; }
-  .char:hover .ring { box-shadow: 0 10px 20px rgba(59,42,30,0.22); }
+  .char .figure svg { width: 100%; height: auto; display: block; }
+  .char:hover .figure { filter: drop-shadow(0 12px 14px rgba(59,42,30,0.26)); }
 
   /* 다른 캐릭터가 선택되면 투명 처리 */
   .lineup.has-selection .char { opacity: 0; pointer-events: none; }
   .lineup.has-selection .char.active { opacity: 1; pointer-events: auto; }
-  .char.active .ring {
-    border-color: #b8894a;
-    box-shadow: 0 0 0 4px rgba(184,137,74,0.25), 0 12px 22px rgba(59,42,30,0.25);
+  .char.active .figure {
+    filter: drop-shadow(0 0 16px rgba(184,137,74,0.6)) drop-shadow(0 12px 18px rgba(59,42,30,0.28));
   }
+  /* 선택된 선배는 활짝 웃는 입 + 웃는 눈으로 */
+  .char .figure .mouth,
+  .char .figure .eyes { transition: opacity 0.3s ease; }
+  .char .figure .mouth-smile,
+  .char .figure .eyes-smile { opacity: 0; }
+  .char.active .figure .mouth-smile,
+  .char.active .figure .eyes-smile { opacity: 1; }
+  .char.active .figure .mouth-normal,
+  .char.active .figure .eyes-normal { opacity: 0; }
 
   /* 클릭 시 나오는 질문 목록 */
   .qna {
@@ -188,103 +194,17 @@
 
   <header>
     <h1 class="logo">선배가 전하는 말</h1>
-    <p class="hint" id="hint">캐릭터를 눌러보세요</p>
+    <p class="hint" id="hint">선배를 선택하세요!</p>
   </header>
 
   <main>
 
     <div class="lineup" id="lineup">
-
-      <!-- 1. 단발 여학생 -->
-      <button class="char" onclick="pick(this)">
-        <div class="ring">
-          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#5b6b8a"/>
-            <rect x="36" y="60" width="12" height="16" fill="#f4d3bf"/>
-            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
-            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#c8455a"/>
-            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f4d3bf"/>
-            <path d="M20 42 q0-30 22-30 t22 30 q-6-8-10-6 q2-10-12-11 q-14 1-12 11 q-4-2-10 6 Z" fill="#4a352a"/>
-            <path d="M20 40 q-2 14 2 20 q-6-16-2-22 Z" fill="#4a352a"/>
-            <path d="M64 40 q2 14 -2 20 q6-16 2-22 Z" fill="#4a352a"/>
-            <circle cx="34" cy="42" r="2.4" fill="#3b2a1e"/>
-            <circle cx="50" cy="42" r="2.4" fill="#3b2a1e"/>
-            <circle cx="30" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
-            <circle cx="54" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
-            <path d="M39 49 q3 3 6 0" stroke="#c8455a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-
-      <!-- 2. 안경 남학생 -->
-      <button class="char" onclick="pick(this)">
-        <div class="ring">
-          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#6d5a44"/>
-            <rect x="36" y="60" width="12" height="16" fill="#f6dcc4"/>
-            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
-            <rect x="40" y="63" width="4" height="12" fill="#3d5a3a"/>
-            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f6dcc4"/>
-            <path d="M20 40 q-2-28 22-28 t22 28 q-8-12-22-11 q-14-1-22 11 Z" fill="#2c2320"/>
-            <circle cx="34" cy="42" r="6" fill="none" stroke="#3b2a1e" stroke-width="1.6"/>
-            <circle cx="50" cy="42" r="6" fill="none" stroke="#3b2a1e" stroke-width="1.6"/>
-            <line x1="40" y1="42" x2="44" y2="42" stroke="#3b2a1e" stroke-width="1.6"/>
-            <circle cx="34" cy="42" r="2.2" fill="#3b2a1e"/>
-            <circle cx="50" cy="42" r="2.2" fill="#3b2a1e"/>
-            <circle cx="29" cy="49" r="2.6" fill="#f4a9a0" opacity="0.55"/>
-            <circle cx="55" cy="49" r="2.6" fill="#f4a9a0" opacity="0.55"/>
-            <path d="M39 50 q3 2 6 0" stroke="#a8632a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-
-      <!-- 3. 양갈래 여학생 -->
-      <button class="char" onclick="pick(this)">
-        <div class="ring">
-          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#8a5b6b"/>
-            <rect x="36" y="60" width="12" height="16" fill="#f4d3bf"/>
-            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
-            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#e0a94a"/>
-            <ellipse cx="18" cy="52" rx="7" ry="12" fill="#6b4a2e"/>
-            <ellipse cx="66" cy="52" rx="7" ry="12" fill="#6b4a2e"/>
-            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#f4d3bf"/>
-            <path d="M20 40 q-2-30 22-30 t22 30 q-8-14-22-13 q-14-1-22 13 Z" fill="#6b4a2e"/>
-            <circle cx="34" cy="42" r="2.4" fill="#3b2a1e"/>
-            <circle cx="50" cy="42" r="2.4" fill="#3b2a1e"/>
-            <circle cx="30" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
-            <circle cx="54" cy="48" r="3" fill="#f4a9a0" opacity="0.6"/>
-            <path d="M38 49 q4 4 8 0" stroke="#c8455a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-
-      <!-- 4. 곱슬 남학생 -->
-      <button class="char" onclick="pick(this)">
-        <div class="ring">
-          <svg viewBox="8 6 68 68" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 96 V74 q22-10 44 0 V96 Z" fill="#4a6f5a"/>
-            <rect x="36" y="60" width="12" height="16" fill="#e9c3a0"/>
-            <path d="M32 62 L42 72 L52 62 L48 60 L42 66 L36 60 Z" fill="#fff"/>
-            <path d="M40 66 L44 66 L43 74 L41 74 Z" fill="#3a5f9a"/>
-            <ellipse cx="42" cy="40" rx="22" ry="23" fill="#e9c3a0"/>
-            <g fill="#2f2a26">
-              <circle cx="26" cy="30" r="8"/>
-              <circle cx="38" cy="24" r="9"/>
-              <circle cx="52" cy="25" r="9"/>
-              <circle cx="60" cy="33" r="8"/>
-              <circle cx="22" cy="40" r="6"/>
-              <circle cx="63" cy="41" r="6"/>
-            </g>
-            <circle cx="34" cy="43" r="2.4" fill="#3b2a1e"/>
-            <circle cx="50" cy="43" r="2.4" fill="#3b2a1e"/>
-            <circle cx="30" cy="49" r="2.8" fill="#f4a9a0" opacity="0.55"/>
-            <circle cx="54" cy="49" r="2.8" fill="#f4a9a0" opacity="0.55"/>
-            <path d="M39 50 q3 3 6 0" stroke="#a8632a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-
+      <!-- 전신 앉은 캐릭터는 스크립트에서 생성 -->
+      <button class="char" onclick="pick(this)"></button>
+      <button class="char" onclick="pick(this)"></button>
+      <button class="char" onclick="pick(this)"></button>
+      <button class="char" onclick="pick(this)"></button>
     </div>
 
     <!-- 질문 목록 -->
@@ -350,13 +270,622 @@
       "미대 입시 전형하고, 책 많이 읽어두는 거. 중3 2학기에 결과가 나오잖아, 합격하고 팽팽 놀았던 것 같은데 그 시간에 책을 읽었으면 어땠을까 싶어.. 그리고 미대 입시 전형을 미리 아는 건, 지금 와서 정보를 얻으려니까 너무 많기도 하고 정신도 없어서, 미리 미대에 대해 공부하고 자신의 방향에 맞는 공부 방향을 먼저 계획하고 들어왔다면 공부가 더 수월했을 것 같아.",
       "절대 포기하지 말고 끝까지 닿을 수 있는 정도까지 한번 해보면 분명 좋은 결과가 나올 거야. 화이팅!!"
     ],
-    null, // 2번
-    null, // 3번
-    null  // 4번
+    // 2번 · 안경 남학생
+    [
+      "가장 힘들었던 점은 입시를 늦게 시작해서 10개월밖에 준비를 못 해서 걱정이 많아 스트레스 받았던 게 힘들었던 것 같아. 더 오래 준비한 애들만큼 따라잡기 위해 거의 하루종일 미술학원에서 그리고, 집에 화판 설치해서 틈날 때마다 그렸어.",
+      "선생님 말씀 듣는 게 제일 중요한 것 같아. 나는 쌤 피드백을 메모에 적어서 배경화면으로 해놓고 입시 때 하고 다니면서 외웠었어.",
+      "중학교 때는 예고 입시 때문에 가장 보편적인 예술만 했다면, 들어오고서는 발상이나 새로운 방식으로 접근할 수 있어서 실기가 더 늘어난 것 같아.",
+      "입시제도가 바뀌면서 경기예고에서 수시로 대학 지원하기는 상당히 어려울 것 같다고 뒤늦게 알았어. 어쩌면 일반고에서 등급 유지하면서 실기랑 병행하는 게 더 좋을 것 같기도 하다는 점.",
+      "우리 미술쌤은 시험 볼 때 쌤이 빙의했다고 생각하고 그리라고 하셨었어. 무조건 말씀 잘 듣고 거의 모든 습관이나 방법을 다 외울 정도로 따라 해!! 화이팅·ᴗ·"
+    ],
+    // 3번 · 양갈래 여학생
+    [
+      "똑같이 입시를 늦게 시작해서 뒤쳐질까 봐 약간 걱정했었는데, 열심히 학원에서 수업에 참여하며 극복해 나갔어.",
+      "고교 과정 예습 꼭 하기, 학원 빠지지 않기!",
+      "물감과 같은 채색 도구를 다루는 능력이 가장 크게 성장한 것 같아.",
+      "내신 챙기기가 아주 어렵다는 사실을 미리 알았으면 좋았을 텐데.",
+      "경기예고 실기 선생님들 전부 너무 좋으셔 💕💕💕 입시 화이팅!!!!"
+    ],
+    // 4번 · 곱슬 남학생
+    [
+      "없음.",
+      "무의식적으로 하지 않기.",
+      "형태력.",
+      "공부는 생각보다 즐겁다.",
+      "재능도 흥미도 열망도 없으면 돌아볼 생각도 말고 접어라."
+    ]
   ];
 
   var chars = Array.prototype.slice.call(document.querySelectorAll('.char'));
   var answerEls = Array.prototype.slice.call(document.querySelectorAll('.q-answer'));
+
+  // ── 의자에 앉은 전신 선배 캐릭터 생성 ──
+  var SENIORS = [
+    { custom: 'uniform', skin: '#f2d7c2', uniform: '#3f4653', hair: '#141414', skirt: '#5b5f68', tie: '#20222a' },
+    { custom: 'bear', skin: '#f7dcc8', uniform: '#33333b', hair: '#2f261f', skirt: '#b7b1a4', tie: '#2b2b2b' },
+    { custom: 'hoodie', skin: '#f7dcc8', hoodie: '#26304a', hair: '#20201f', skirt: '#8f8a80' },
+    { custom: 'suit', skin: '#efcaa6', uniform: '#5f4327', hair: '#1d1a17', tie: '#1f5fa8' }
+  ];
+
+  // 곰돌이 귀 머리띠 + 리본 + 블레이저 교복의 청순 여학생 (레퍼런스 전용)
+  function buildBearGirl(o) {
+    return '<svg class="senior-svg" viewBox="0 0 140 186" xmlns="http://www.w3.org/2000/svg">' +
+      // 바닥 그림자
+      '<ellipse cx="70" cy="179" rx="48" ry="7" fill="#3b2a1e" opacity="0.14"/>' +
+      // 의자 등받이
+      '<rect x="40" y="56" width="60" height="66" rx="9" fill="#a97c48"/>' +
+      '<rect x="46" y="62" width="48" height="20" rx="6" fill="#b98a55"/>' +
+      // 뒤로 흐르는 긴 머리
+      '<path d="M38 46 Q38 10 70 10 Q102 10 102 46 L102 122 Q96 112 93 96 L91 52 L49 52 L47 96 Q44 112 38 122 Z" fill="' + o.hair + '"/>' +
+      // 의자 좌석 + 다리
+      '<rect x="30" y="116" width="80" height="15" rx="4" fill="#8b5e3c"/>' +
+      '<rect x="30" y="116" width="80" height="5" rx="4" fill="#9c6a42"/>' +
+      '<rect x="34" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      '<rect x="98" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      // 다리(맨살) + 흰 양말 + 검정 구두
+      '<rect x="61" y="141" width="8.5" height="22" rx="3" fill="' + o.skin + '"/>' +
+      '<rect x="70.5" y="141" width="8.5" height="22" rx="3" fill="' + o.skin + '"/>' +
+      '<rect x="61" y="156" width="8.5" height="10" rx="2" fill="#fbfaf6"/>' +
+      '<rect x="70.5" y="156" width="8.5" height="10" rx="2" fill="#fbfaf6"/>' +
+      '<ellipse cx="65" cy="168" rx="7.5" ry="4.6" fill="#2b2b2b"/>' +
+      '<ellipse cx="75" cy="168" rx="7.5" ry="4.6" fill="#2b2b2b"/>' +
+      // 회색 주름치마
+      '<path d="M54 116 L86 116 L91 142 L49 142 Z" fill="' + o.skirt + '"/>' +
+      '<path d="M70 116 L86 116 L91 142 L70 142 Z" fill="#000" opacity="0.06"/>' +
+      '<g stroke="rgba(60,50,40,0.2)" stroke-width="1" stroke-linecap="round">' +
+        '<line x1="60" y1="118" x2="57" y2="141"/>' +
+        '<line x1="66" y1="118" x2="65" y2="141"/>' +
+        '<line x1="70" y1="118" x2="70" y2="141"/>' +
+        '<line x1="74" y1="118" x2="75" y2="141"/>' +
+        '<line x1="80" y1="118" x2="83" y2="141"/>' +
+      '</g>' +
+      // 블레이저(교복 상의) + 음영
+      '<path d="M49 120 L48 84 Q48 72 61 70 L79 70 Q92 72 92 84 L91 120 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M70 70 L92 84 L91 120 L70 120 Z" fill="#000" opacity="0.1"/>' +
+      // 흰 셔츠 + 옷깃 + 넥타이 + 단추/뱃지
+      '<rect x="66" y="72" width="8" height="42" fill="#f2efe6"/>' +
+      '<path d="M64 71 L70 79 L76 71 L73 68 L70 73 L67 68 Z" fill="#fbfaf6"/>' +
+      '<path d="M68 74 L72 74 L74 104 L70 110 L66 104 Z" fill="' + o.tie + '"/>' +
+      '<circle cx="63" cy="102" r="1.5" fill="#c9a24a"/>' +
+      '<circle cx="63" cy="110" r="1.5" fill="#c9a24a"/>' +
+      '<circle cx="80" cy="99" r="2.4" fill="#b8894a"/>' +
+      // 무릎 위로 모은 팔 + 손
+      '<path d="M49 86 Q46 102 60 110 L72 112 L72 106 Q58 102 56 88 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M91 86 Q94 102 80 110 L68 112 L68 106 Q82 102 84 88 Z" fill="' + o.uniform + '"/>' +
+      '<ellipse cx="66" cy="110" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      '<ellipse cx="74" cy="110" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      // 목 + 머리 + 음영/하이라이트
+      '<rect x="64" y="60" width="12" height="12" rx="4" fill="' + o.skin + '"/>' +
+      '<circle cx="70" cy="44" r="25" fill="' + o.skin + '"/>' +
+      '<path d="M70 19 A25 25 0 0 1 70 69 Q84 44 70 19 Z" fill="#000" opacity="0.05"/>' +
+      '<ellipse cx="61" cy="35" rx="6" ry="8" fill="#fff" opacity="0.16"/>' +
+      // 앞머리(풍성한 앞머리) + 얼굴 옆 긴 머리
+      '<path d="M43 48 Q42 16 70 15 Q98 16 97 48 Q95 34 86 40 Q80 34 76 42 Q72 36 70 43 Q68 36 64 42 Q60 34 54 40 Q45 34 43 48 Z" fill="' + o.hair + '"/>' +
+      '<path d="M45 32 Q33 60 38 96 Q40 112 49 122 L58 118 Q48 106 49 84 Q50 58 53 35 Z" fill="' + o.hair + '"/>' +
+      '<path d="M95 32 Q107 60 102 96 Q100 112 91 122 L82 118 Q92 106 91 84 Q90 58 87 35 Z" fill="' + o.hair + '"/>' +
+      // 사람 귀 — 옆머리 경계에서 살짝 보이게 (그대로 유지)
+      '<ellipse cx="50" cy="50" rx="3.1" ry="4.4" fill="' + o.skin + '"/>' +
+      '<ellipse cx="90" cy="50" rx="3.1" ry="4.4" fill="' + o.skin + '"/>' +
+      // 곰돌이 귀 머리띠 — 처음처럼 머리 위 동그란 귀
+      '<ellipse cx="51" cy="33" rx="7" ry="3" fill="#000" opacity="0.12"/>' +
+      '<ellipse cx="89" cy="33" rx="7" ry="3" fill="#000" opacity="0.12"/>' +
+      '<circle cx="51" cy="24" r="11" fill="#e9cba3" stroke="#cba876" stroke-width="0.8"/>' +
+      '<circle cx="51" cy="24" r="5.8" fill="#d7a76e"/>' +
+      '<circle cx="89" cy="24" r="11" fill="#e9cba3" stroke="#cba876" stroke-width="0.8"/>' +
+      '<circle cx="89" cy="24" r="5.8" fill="#d7a76e"/>' +
+      // 빨간 물방울 리본 (머리 위)
+      '<path d="M70 22 Q57 12 54 20 Q53 28 62 28 Z" fill="#d94a4a"/>' +
+      '<path d="M70 22 Q83 12 86 20 Q87 28 78 28 Z" fill="#d94a4a"/>' +
+      '<rect x="66" y="18" width="8" height="10" rx="2.5" fill="#c23b3b"/>' +
+      '<g fill="#fff">' +
+        '<circle cx="58" cy="19" r="1.3"/><circle cx="60" cy="24" r="1.1"/>' +
+        '<circle cx="82" cy="19" r="1.3"/><circle cx="80" cy="24" r="1.1"/>' +
+      '</g>' +
+      // 얼굴 — 큰 눈(평소/웃음) + 볼터치 + 입(평소/웃음)
+      '<g class="eyes eyes-normal">' +
+        '<ellipse cx="61" cy="47" rx="4" ry="5" fill="#2b241f"/>' +
+        '<ellipse cx="79" cy="47" rx="4" ry="5" fill="#2b241f"/>' +
+        '<circle cx="62.4" cy="45.2" r="1.3" fill="#fff"/>' +
+        '<circle cx="80.4" cy="45.2" r="1.3" fill="#fff"/>' +
+      '</g>' +
+      '<g class="eyes eyes-smile">' +
+        '<path d="M56 47 Q61 40 66 47" stroke="#2b241f" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+        '<path d="M74 47 Q79 40 84 47" stroke="#2b241f" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="52" cy="54" r="4" fill="#f4a1a0" opacity="0.6"/>' +
+      '<circle cx="88" cy="54" r="4" fill="#f4a1a0" opacity="0.6"/>' +
+      '<path class="mouth mouth-normal" d="M66 55 q4 3 8 0" stroke="#c8455a" stroke-width="1.7" fill="none" stroke-linecap="round"/>' +
+      '<path class="mouth mouth-smile" d="M65 54 Q70 61 75 54 Q70 58 65 54 Z" fill="#c8455a"/>' +
+      // 옆에 떠 있는 하트
+      '<path d="M104 60 q-3.6 -4.2 -7 -0.6 q-2.6 2.6 0 5.4 l7 6.8 l7 -6.8 q2.6 -2.8 0 -5.4 q-3.4 -3.6 -7 0.6 Z" fill="#e26370"/>' +
+    '</svg>';
+  }
+
+  // 네이비 오버사이즈 후드티 + 긴 검정 생머리 여학생 (레퍼런스 전용)
+  function buildHoodieGirl(o) {
+    return '<svg class="senior-svg" viewBox="0 0 140 186" xmlns="http://www.w3.org/2000/svg">' +
+      // 바닥 그림자
+      '<ellipse cx="70" cy="179" rx="48" ry="7" fill="#3b2a1e" opacity="0.14"/>' +
+      // 의자 등받이
+      '<rect x="40" y="56" width="60" height="66" rx="9" fill="#a97c48"/>' +
+      '<rect x="46" y="62" width="48" height="20" rx="6" fill="#b98a55"/>' +
+      // 단발 검정 머리 (뒤) — 정수리를 넓고 둥근 아치로 + 살짝 볼륨
+      '<path d="M38 47 Q38 23 53 15 Q70 9 87 15 Q102 23 102 47 L100 76 Q95 86 88 82 L88 54 L52 54 L52 82 Q45 86 40 76 Z" fill="' + o.hair + '"/>' +
+      // 의자 좌석 + 다리
+      '<rect x="30" y="116" width="80" height="15" rx="4" fill="#8b5e3c"/>' +
+      '<rect x="30" y="116" width="80" height="5" rx="4" fill="#9c6a42"/>' +
+      '<rect x="34" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      '<rect x="98" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      // 다리(맨살) + 흰 양말 + 검정 로퍼
+      '<rect x="61" y="128" width="8.5" height="37" rx="3" fill="' + o.skin + '"/>' +
+      '<rect x="70.5" y="128" width="8.5" height="37" rx="3" fill="' + o.skin + '"/>' +
+      '<rect x="61" y="155" width="8.5" height="11" rx="2" fill="#fbfaf6"/>' +
+      '<rect x="70.5" y="155" width="8.5" height="11" rx="2" fill="#fbfaf6"/>' +
+      '<ellipse cx="65" cy="168" rx="7.5" ry="4.6" fill="#232323"/>' +
+      '<ellipse cx="75" cy="168" rx="7.5" ry="4.6" fill="#232323"/>' +
+      // 회색 주름치마 (후드 밑으로 살짝)
+      '<path d="M55 110 L85 110 L89 130 L51 130 Z" fill="' + o.skirt + '"/>' +
+      '<g stroke="rgba(50,45,40,0.22)" stroke-width="0.9" stroke-linecap="round">' +
+        '<line x1="61" y1="112" x2="59" y2="129"/>' +
+        '<line x1="67" y1="112" x2="66" y2="129"/>' +
+        '<line x1="70" y1="112" x2="70" y2="129"/>' +
+        '<line x1="73" y1="112" x2="74" y2="129"/>' +
+        '<line x1="79" y1="112" x2="81" y2="129"/>' +
+      '</g>' +
+      // 후드티 (오버사이즈) + 음영
+      '<path d="M42 122 Q40 86 45 76 Q51 66 60 65 Q64 71 70 71 Q76 71 80 65 Q89 66 95 76 Q100 86 98 122 Z" fill="' + o.hoodie + '"/>' +
+      '<path d="M70 71 Q76 71 80 65 Q89 66 95 76 Q100 86 98 122 L70 122 Z" fill="#000" opacity="0.12"/>' +
+      // 리브 넥라인 + 끈 + 주머니
+      '<path d="M58 66 Q70 75 82 66 Q80 71 70 71 Q60 71 58 66 Z" fill="#1a2136"/>' +
+      '<line x1="67" y1="71" x2="66" y2="94" stroke="#dcdcdc" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<line x1="73" y1="71" x2="74" y2="94" stroke="#dcdcdc" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<circle cx="66" cy="95" r="1.7" fill="#ececec"/>' +
+      '<circle cx="74" cy="95" r="1.7" fill="#ececec"/>' +
+      '<path d="M55 104 Q70 111 85 104" fill="none" stroke="#000" stroke-opacity="0.16" stroke-width="1.4"/>' +
+      // 소매 + 무릎 위 손
+      '<path d="M45 88 Q42 106 58 114 L72 116 L72 108 Q56 104 54 90 Z" fill="' + o.hoodie + '"/>' +
+      '<path d="M95 88 Q98 106 82 114 L68 116 L68 108 Q84 104 86 90 Z" fill="' + o.hoodie + '"/>' +
+      '<ellipse cx="66" cy="114" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      '<ellipse cx="74" cy="114" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      // 목 + 머리 + 음영/하이라이트
+      '<rect x="64" y="60" width="12" height="10" rx="4" fill="' + o.skin + '"/>' +
+      '<circle cx="70" cy="44" r="25" fill="' + o.skin + '"/>' +
+      '<path d="M70 19 A25 25 0 0 1 70 69 Q84 44 70 19 Z" fill="#000" opacity="0.05"/>' +
+      '<ellipse cx="61" cy="35" rx="6" ry="8" fill="#fff" opacity="0.16"/>' +
+      // 앞머리 + 얼굴 옆 긴 머리 (윗부분 넓고 둥글게)
+      '<path d="M43 47 Q44 24 57 17 Q70 13 83 17 Q96 24 97 47 Q92 32 84 37 Q78 32 74 39 Q71 33 70 40 Q69 33 66 39 Q62 32 56 37 Q48 32 43 47 Z" fill="' + o.hair + '"/>' +
+      '<path d="M45 32 Q35 54 39 74 Q41 84 50 83 Q56 80 54 66 Q52 50 54 35 Z" fill="' + o.hair + '"/>' +
+      '<path d="M95 32 Q105 54 101 74 Q99 84 90 83 Q84 80 86 66 Q88 50 86 35 Z" fill="' + o.hair + '"/>' +
+      // 사람 귀 — 얼굴 옆에 살짝
+      '<ellipse cx="49" cy="50" rx="3.2" ry="4.6" fill="' + o.skin + '"/>' +
+      '<path d="M48 47.6 Q50.6 50 48.3 52.8" stroke="#e0a98f" stroke-width="1" fill="none" stroke-linecap="round"/>' +
+      '<ellipse cx="91" cy="50" rx="3.2" ry="4.6" fill="' + o.skin + '"/>' +
+      '<path d="M92 47.6 Q89.4 50 91.7 52.8" stroke="#e0a98f" stroke-width="1" fill="none" stroke-linecap="round"/>' +
+      // 얼굴 — 큰 눈(속눈썹) + 볼터치 + 입 (평소/웃음)
+      '<g class="eyes eyes-normal">' +
+        '<ellipse cx="60" cy="47" rx="4.2" ry="5.2" fill="#20201f"/>' +
+        '<ellipse cx="80" cy="47" rx="4.2" ry="5.2" fill="#20201f"/>' +
+        '<circle cx="61.4" cy="45.2" r="1.3" fill="#fff"/>' +
+        '<circle cx="81.4" cy="45.2" r="1.3" fill="#fff"/>' +
+        '<path d="M55 42.6 Q60 39.6 65 42.6" stroke="#20201f" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+        '<path d="M75 42.6 Q80 39.6 85 42.6" stroke="#20201f" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '<g class="eyes eyes-smile">' +
+        '<path d="M55 47 Q60 40 65 47" stroke="#20201f" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+        '<path d="M75 47 Q80 40 85 47" stroke="#20201f" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="52" cy="54" r="4" fill="#f4a1a0" opacity="0.6"/>' +
+      '<circle cx="88" cy="54" r="4" fill="#f4a1a0" opacity="0.6"/>' +
+      '<path class="mouth mouth-normal" d="M66 55 q4 3 8 0" stroke="#c8455a" stroke-width="1.7" fill="none" stroke-linecap="round"/>' +
+      '<path class="mouth mouth-smile" d="M65 54 Q70 61 75 54 Q70 58 65 54 Z" fill="#c8455a"/>' +
+    '</svg>';
+  }
+
+
+  // 긴 생머리 + 네이비 블레이저 교복 + 검정 넥타이 + 회색 주름치마 여학생 (레퍼런스 전용)
+  function buildUniformGirl(o) {
+    var shirt = '#f4f2ea';
+    return '<svg class="senior-svg" viewBox="0 0 140 186" xmlns="http://www.w3.org/2000/svg">' +
+      // 바닥 그림자
+      '<ellipse cx="70" cy="179" rx="48" ry="7" fill="#3b2a1e" opacity="0.14"/>' +
+      // 의자 등받이
+      '<rect x="40" y="56" width="60" height="66" rx="9" fill="#a97c48"/>' +
+      '<rect x="46" y="62" width="48" height="20" rx="6" fill="#b98a55"/>' +
+      // 길게 흐르는 뒤 머리 (꽉 찬 실루엣)
+      '<path d="M39 46 Q39 10 70 10 Q101 10 101 46 L101 128 Q94 120 70 120 Q46 120 39 128 Z" fill="' + o.hair + '"/>' +
+      // 의자 좌석 + 다리
+      '<rect x="30" y="116" width="80" height="15" rx="4" fill="#8b5e3c"/>' +
+      '<rect x="30" y="116" width="80" height="5" rx="4" fill="#9c6a42"/>' +
+      '<rect x="34" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      '<rect x="98" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      // 맨다리 (무릎 모으고) + 무릎 + 흰 양말 + 검정 구두
+      '<rect x="61.5" y="144" width="8" height="22" rx="3" fill="' + o.skin + '"/>' +
+      '<rect x="70.5" y="144" width="8" height="22" rx="3" fill="' + o.skin + '"/>' +
+      '<circle cx="65.5" cy="145" r="5.8" fill="' + o.skin + '"/>' +
+      '<circle cx="74.5" cy="145" r="5.8" fill="' + o.skin + '"/>' +
+      '<rect x="61.5" y="157" width="8" height="9" rx="2" fill="#fbfaf6"/>' +
+      '<rect x="70.5" y="157" width="8" height="9" rx="2" fill="#fbfaf6"/>' +
+      '<ellipse cx="65.5" cy="168" rx="7" ry="4.4" fill="#232323"/>' +
+      '<ellipse cx="74.5" cy="168" rx="7" ry="4.4" fill="#232323"/>' +
+      // 회색 주름치마
+      '<path d="M53 118 L87 118 L91 143 L49 143 Z" fill="' + o.skirt + '"/>' +
+      '<path d="M70 118 L87 118 L91 143 L70 143 Z" fill="#000" opacity="0.06"/>' +
+      '<g stroke="rgba(30,30,35,0.3)" stroke-width="0.9" stroke-linecap="round">' +
+        '<line x1="60" y1="120" x2="57" y2="142"/>' +
+        '<line x1="66" y1="120" x2="65" y2="142"/>' +
+        '<line x1="70" y1="120" x2="70" y2="142"/>' +
+        '<line x1="74" y1="120" x2="75" y2="142"/>' +
+        '<line x1="80" y1="120" x2="83" y2="142"/>' +
+      '</g>' +
+      // 블레이저(교복 상의) + 음영
+      '<path d="M49 122 L48 84 Q48 71 61 69 L79 69 Q92 71 92 84 L91 122 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M70 69 L92 84 L91 122 L70 122 Z" fill="#000" opacity="0.08"/>' +
+      // 흰 셔츠 V
+      '<path d="M60 70 L80 70 L70 100 Z" fill="' + shirt + '"/>' +
+      // 검정 넥타이 (매듭 + 블레이드)
+      '<path d="M67 72 L73 72 L74 78 L66 78 Z" fill="' + o.tie + '"/>' +
+      '<path d="M66 78 L74 78 L72 98 L70 102 L68 98 Z" fill="' + o.tie + '"/>' +
+      // 라펠(블레이저 깃)
+      '<path d="M60 70 L70 100 L65 100 L55 71 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M80 70 L70 100 L75 100 L85 71 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M61 71 L69 98" stroke="#000" stroke-opacity="0.13" stroke-width="0.9" fill="none"/>' +
+      '<path d="M79 71 L71 98" stroke="#000" stroke-opacity="0.13" stroke-width="0.9" fill="none"/>' +
+      // 흰 셔츠 깃
+      '<path d="M62 69 L69 76 L64 79 Z" fill="' + shirt + '"/>' +
+      '<path d="M78 69 L71 76 L76 79 Z" fill="' + shirt + '"/>' +
+      // 단추
+      '<circle cx="70" cy="108" r="1.9" fill="#c9b78a"/>' +
+      // 소매 + 무릎 위로 모은 손
+      '<path d="M49 86 Q46 104 60 112 L72 113 L72 107 Q58 104 56 88 Z" fill="' + o.uniform + '"/>' +
+      '<path d="M91 86 Q94 104 80 112 L68 113 L68 107 Q82 104 84 88 Z" fill="' + o.uniform + '"/>' +
+      '<ellipse cx="66" cy="112" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      '<ellipse cx="74" cy="112" rx="6" ry="4.6" fill="' + o.skin + '"/>' +
+      // 목 + 머리 + 음영
+      '<rect x="64" y="60" width="12" height="12" rx="4" fill="' + o.skin + '"/>' +
+      '<circle cx="70" cy="44" r="25" fill="' + o.skin + '"/>' +
+      '<path d="M70 19 A25 25 0 0 1 70 69 Q84 44 70 19 Z" fill="#000" opacity="0.05"/>' +
+      '<ellipse cx="61" cy="35" rx="6" ry="8" fill="#fff" opacity="0.14"/>' +
+      // 앞머리 — 이마 양옆 검은 머리 + 가운데는 시스루(살짝 풍성한 결)
+      '<path d="M70 14 Q51 14 44 33 Q42 43 49 48 Q53 34 63 26 Q68 20 71 20 Z" fill="' + o.hair + '"/>' +
+      '<path d="M70 14 Q89 14 96 33 Q98 43 91 48 Q87 34 77 26 Q72 20 69 20 Z" fill="' + o.hair + '"/>' +
+      '<g stroke="' + o.hair + '" fill="none" stroke-linecap="round">' +
+        '<path d="M69 17 Q63 27 60 40" stroke-width="1.3"/>' +
+        '<path d="M71 17 Q77 27 80 40" stroke-width="1.3"/>' +
+        '<path d="M67 18 Q61 28 58 41" stroke-width="1.1"/>' +
+        '<path d="M73 18 Q79 28 82 41" stroke-width="1.1"/>' +
+        '<path d="M70 18 Q68 29 67 40" stroke-width="1"/>' +
+        '<path d="M70 18 Q72 29 73 40" stroke-width="1"/>' +
+        '<path d="M65 19 Q60 29 57 41" stroke-width="0.9"/>' +
+        '<path d="M75 19 Q80 29 83 41" stroke-width="0.9"/>' +
+        '<path d="M68 18 Q64 28 62 41" stroke-width="0.9"/>' +
+        '<path d="M72 18 Q76 28 78 41" stroke-width="0.9"/>' +
+        '<path d="M70 18 Q69.5 29 69 40" stroke-width="0.8"/>' +
+        '<path d="M70 18 Q70.5 29 71 40" stroke-width="0.8"/>' +
+      '</g>' +
+      // 얼굴 옆으로 길게 흘러내리는 머리
+      '<path d="M45 34 Q33 60 38 96 Q40 112 49 122 L58 118 Q48 106 49 84 Q50 58 53 37 Z" fill="' + o.hair + '"/>' +
+      '<path d="M95 34 Q107 60 102 96 Q100 112 91 122 L82 118 Q92 106 91 84 Q90 58 87 37 Z" fill="' + o.hair + '"/>' +
+      // 귀 (양옆에 살짝)
+      '<ellipse cx="46.5" cy="50" rx="3.2" ry="4.4" fill="' + o.skin + '"/>' +
+      '<ellipse cx="93.5" cy="50" rx="3.2" ry="4.4" fill="' + o.skin + '"/>' +
+      // 얼굴 — 눈(평소/웃음) + 볼터치 + 입(평소/웃음)
+      '<g class="eyes eyes-normal">' +
+        '<ellipse cx="61" cy="47" rx="3.5" ry="4.5" fill="#1a1a1a"/>' +
+        '<ellipse cx="79" cy="47" rx="3.5" ry="4.5" fill="#1a1a1a"/>' +
+        '<circle cx="62.2" cy="45.4" r="1.2" fill="#fff"/>' +
+        '<circle cx="80.2" cy="45.4" r="1.2" fill="#fff"/>' +
+      '</g>' +
+      '<g class="eyes eyes-smile">' +
+        '<path d="M57 47 Q61 41 65 47" stroke="#1a1a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+        '<path d="M75 47 Q79 41 83 47" stroke="#1a1a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="53" cy="54" r="4.3" fill="#ef9a9a" opacity="0.65"/>' +
+      '<circle cx="87" cy="54" r="4.3" fill="#ef9a9a" opacity="0.65"/>' +
+      '<path class="mouth mouth-normal" d="M66 55 Q70 58 74 55" stroke="#c8455a" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+      '<path class="mouth mouth-smile" d="M65 54 Q70 61 75 54 Q70 58 65 54 Z" fill="#c8455a"/>' +
+      // 옆 얼굴 감싸는 잔머리 몇 가닥
+      '<g stroke="' + o.hair + '" fill="none" stroke-linecap="round">' +
+        '<path d="M50 38 Q46 52 49 68" stroke-width="1.1"/>' +
+        '<path d="M53 41 Q50 55 53 70" stroke-width="0.9"/>' +
+        '<path d="M90 38 Q94 52 91 68" stroke-width="1.1"/>' +
+        '<path d="M87 41 Q90 55 87 70" stroke-width="0.9"/>' +
+      '</g>' +
+      // 둥근 안경
+      '<g fill="none" stroke="#33343a" stroke-width="1.6">' +
+        '<circle cx="61" cy="47" r="7.2"/>' +
+        '<circle cx="79" cy="47" r="7.2"/>' +
+        '<path d="M68.2 47 Q70 45 71.8 47"/>' +
+        '<line x1="53.8" y1="46.5" x2="49.5" y2="46"/>' +
+        '<line x1="86.2" y1="46.5" x2="90.5" y2="46"/>' +
+      '</g>' +
+    '</svg>';
+  }
+
+  // 갈색 정장 + 둥근 안경 + 파란 넥타이 남학생 (레퍼런스 전용)
+  // 다른 선배보다 키가 커서 상체를 위로 끌어올림 (viewBox 위쪽을 확장)
+  function buildSuitBoy(o) {
+    var suit  = o.uniform;   // 다크그린 정장
+    var shirt = '#f2efe4';   // 흰 셔츠
+    var tie   = o.tie;       // 파란 넥타이
+    var tieDk = '#184a82';   // 넥타이 매듭 음영
+    // viewBox 위쪽을 22 확장 → 의자·다리·발은 다른 선배와 같은 위치(바닥 정렬),
+    // 머리·상체는 위로 올라와 라인업에서 키가 커 보임
+    return '<svg class="senior-svg" viewBox="0 -22 140 208" xmlns="http://www.w3.org/2000/svg">' +
+      // 바닥 그림자 (다른 선배와 동일)
+      '<ellipse cx="70" cy="179" rx="48" ry="7" fill="#3b2a1e" opacity="0.14"/>' +
+      // 의자 등받이 (동일)
+      '<rect x="40" y="54" width="60" height="68" rx="9" fill="#a97c48"/>' +
+      '<rect x="46" y="60" width="48" height="20" rx="6" fill="#b98a55"/>' +
+      // 뒤통수 짧은 머리 (위로 올림 + 볼륨)
+      '<path d="M45 30 Q45 -3 70 -3 Q95 -3 95 30 L95 40 L45 40 Z" fill="' + o.hair + '"/>' +
+      // 의자 좌석 + 다리 (동일)
+      '<rect x="30" y="116" width="80" height="15" rx="4" fill="#8b5e3c"/>' +
+      '<rect x="30" y="116" width="80" height="5" rx="4" fill="#9c6a42"/>' +
+      '<rect x="34" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      '<rect x="98" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      // 다크그린 바지 + 음영 + 크리스 (동일)
+      '<path d="M52 116 L68 116 L66 168 L54 168 Z" fill="' + suit + '"/>' +
+      '<path d="M72 116 L88 116 L86 168 L74 168 Z" fill="' + suit + '"/>' +
+      '<path d="M72 116 L88 116 L87 143 L73 143 Z" fill="#000" opacity="0.08"/>' +
+      '<line x1="60" y1="120" x2="60" y2="166" stroke="#000" stroke-opacity="0.1" stroke-width="1"/>' +
+      '<line x1="80" y1="120" x2="80" y2="166" stroke="#000" stroke-opacity="0.1" stroke-width="1"/>' +
+      // 검정 로퍼 (동일)
+      '<ellipse cx="60" cy="170" rx="10.5" ry="5.6" fill="#242424"/>' +
+      '<ellipse cx="80" cy="170" rx="10.5" ry="5.6" fill="#242424"/>' +
+      '<ellipse cx="60" cy="167.5" rx="8" ry="2.4" fill="#3a3a3a"/>' +
+      '<ellipse cx="80" cy="167.5" rx="8" ry="2.4" fill="#3a3a3a"/>' +
+      // 정장 상의(몸통) — 어깨선을 위로 올려 상체를 길게
+      '<path d="M47 120 L45 70 Q45 58 62 56 L70 88 L70 120 Z" fill="' + suit + '"/>' +
+      '<path d="M93 120 L95 70 Q95 58 78 56 L70 88 L70 120 Z" fill="' + suit + '"/>' +
+      '<path d="M70 88 L93 120 L70 120 Z" fill="#000" opacity="0.07"/>' +
+      // 셔츠 V (가슴)
+      '<path d="M59 55 L81 55 L70 92 Z" fill="' + shirt + '"/>' +
+      // 넥타이 (매듭 + 블레이드)
+      '<path d="M66 58 L74 58 L75 64 L65 64 Z" fill="' + tieDk + '"/>' +
+      '<path d="M65 64 L75 64 L72 88 L70 92 L68 88 Z" fill="' + tie + '"/>' +
+      // 정장 라펠(깃)
+      '<path d="M59 55 L70 92 L65 92 L54 56 Z" fill="' + suit + '"/>' +
+      '<path d="M81 55 L70 92 L75 92 L86 56 Z" fill="' + suit + '"/>' +
+      '<path d="M60 56 L69 89" stroke="#000" stroke-opacity="0.14" stroke-width="1" fill="none"/>' +
+      '<path d="M80 56 L71 89" stroke="#000" stroke-opacity="0.14" stroke-width="1" fill="none"/>' +
+      // 흰 셔츠 깃(목 옆)
+      '<path d="M61 54 L69 61 L64 64 Z" fill="' + shirt + '"/>' +
+      '<path d="M79 54 L71 61 L76 64 Z" fill="' + shirt + '"/>' +
+      // 단추 2개
+      '<circle cx="70" cy="100" r="1.8" fill="#2a1a0d"/>' +
+      '<circle cx="70" cy="110" r="1.8" fill="#2a1a0d"/>' +
+      // 소매 + 흰 셔츠 커프스 + 주먹 쥔 손 (손은 무릎 위, 다른 선배와 동일 위치)
+      '<path d="M47 71 Q40 96 46 116 L58 116 Q53 98 55 73 Z" fill="' + suit + '"/>' +
+      '<path d="M93 71 Q100 96 94 116 L82 116 Q87 98 85 73 Z" fill="' + suit + '"/>' +
+      '<rect x="49" y="113" width="12" height="4" rx="1.5" fill="' + shirt + '"/>' +
+      '<rect x="79" y="113" width="12" height="4" rx="1.5" fill="' + shirt + '"/>' +
+      '<rect x="49" y="116" width="12" height="11" rx="4.5" fill="' + o.skin + '"/>' +
+      '<rect x="79" y="116" width="12" height="11" rx="4.5" fill="' + o.skin + '"/>' +
+      '<g stroke="#d8a878" stroke-width="0.8" stroke-linecap="round">' +
+        '<line x1="52.5" y1="118" x2="52.5" y2="123"/>' +
+        '<line x1="55" y1="118" x2="55" y2="123.5"/>' +
+        '<line x1="57.5" y1="118" x2="57.5" y2="123"/>' +
+        '<line x1="82.5" y1="118" x2="82.5" y2="123"/>' +
+        '<line x1="85" y1="118" x2="85" y2="123.5"/>' +
+        '<line x1="87.5" y1="118" x2="87.5" y2="123"/>' +
+      '</g>' +
+      // 목
+      '<rect x="64" y="44" width="12" height="15" rx="4" fill="' + o.skin + '"/>' +
+      '<path d="M64 44 h12 v5 q-6 4 -12 0 Z" fill="#000" opacity="0.06"/>' +
+      // 머리(얼굴) + 음영/하이라이트 (위로 올림, 살구색 넉넉히 채워 머리와 틈 없게)
+      '<circle cx="70" cy="30" r="24.5" fill="' + o.skin + '"/>' +
+      '<path d="M70 5.5 A24.5 24.5 0 0 1 70 54.5 Q84 30 70 5.5 Z" fill="#000" opacity="0.05"/>' +
+      '<ellipse cx="61" cy="22" rx="5.3" ry="7.2" fill="#fff" opacity="0.15"/>' +
+      // 앞머리 — 이마를 촘촘히 덮고 눈썹 바로 위까지 내려오게 (볼륨 업)
+      '<path d="M44 32 Q40 -6 70 -7 Q100 -6 96 32 Q92 22 84 20 Q86 15 76 19 Q73 21 70 20 Q67 21 64 19 Q54 15 56 20 Q48 22 44 32 Z" fill="' + o.hair + '"/>' +
+      // 앞머리 결/가르마 — 가는 선으로 자연스럽게 갈라지게 (선적 요소)
+      '<g stroke="#39322b" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.85">' +
+        '<path d="M68 -3 Q64 6 60 16"/>' +
+        '<path d="M69.5 -3 Q73 6 78 16"/>' +
+        '<path d="M63 -1 Q58 7 55 16"/>' +
+        '<path d="M76 -1 Q81 7 84 16"/>' +
+        '<path d="M58 2 Q54 9 52 17"/>' +
+        '<path d="M81 2 Q85 9 87 17"/>' +
+      '</g>' +
+      // 귀 — 옆머리 위로 보이게 (안쪽 선 없이 깔끔하게)
+      '<ellipse cx="47.5" cy="36" rx="3.2" ry="4.5" fill="' + o.skin + '"/>' +
+      '<ellipse cx="92.5" cy="36" rx="3.2" ry="4.5" fill="' + o.skin + '"/>' +
+      // 눈썹 (안경 위) — 앞머리는 이 눈썹 살짝 위까지 내려옴
+      '<path d="M55 24 Q60 21.5 65 24" stroke="' + o.hair + '" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+      '<path d="M75 24 Q80 21.5 85 24" stroke="' + o.hair + '" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+      // 눈 (요청대로 뜬 눈 그대로) + 볼터치 + 입
+      '<g class="eyes eyes-normal">' +
+        '<ellipse cx="60" cy="34" rx="2.9" ry="3.5" fill="#241a12"/>' +
+        '<ellipse cx="80" cy="34" rx="2.9" ry="3.5" fill="#241a12"/>' +
+        '<circle cx="61.1" cy="32.8" r="0.95" fill="#fff"/>' +
+        '<circle cx="81.1" cy="32.8" r="0.95" fill="#fff"/>' +
+      '</g>' +
+      '<g class="eyes eyes-smile">' +
+        '<path d="M55 35 Q60 28 65 35" stroke="#241a12" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+        '<path d="M75 35 Q80 28 85 35" stroke="#241a12" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="53" cy="40" r="3.4" fill="#f0a996" opacity="0.5"/>' +
+      '<circle cx="87" cy="40" r="3.4" fill="#f0a996" opacity="0.5"/>' +
+      '<path class="mouth mouth-normal" d="M65 43 Q70 47 75 43" stroke="#b5654f" stroke-width="1.7" fill="none" stroke-linecap="round"/>' +
+      '<path class="mouth mouth-smile" d="M64 42 Q70 49 76 42 Q70 46 64 42 Z" fill="#c8604a"/>' +
+      // 둥근 금속테 안경
+      '<g fill="none" stroke="#9a9ea0" stroke-width="1.7">' +
+        '<circle cx="60" cy="33" r="8.2"/>' +
+        '<circle cx="80" cy="33" r="8.2"/>' +
+        '<path d="M68.2 33 Q70 31 71.8 33"/>' +
+        '<line x1="51.8" y1="32.5" x2="47.5" y2="31.5"/>' +
+        '<line x1="88.2" y1="32.5" x2="92.5" y2="31.5"/>' +
+      '</g>' +
+      '<path d="M55 30 q3.5 -2 7 0" stroke="#fff" stroke-width="1.4" stroke-opacity="0.4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M75 30 q3.5 -2 7 0" stroke="#fff" stroke-width="1.4" stroke-opacity="0.4" fill="none" stroke-linecap="round"/>' +
+    '</svg>';
+  }
+
+  function buildSenior(o) {
+    if (o.custom === 'bear') return buildBearGirl(o);
+    if (o.custom === 'hoodie') return buildHoodieGirl(o);
+    if (o.custom === 'uniform') return buildUniformGirl(o);
+    if (o.custom === 'suit') return buildSuitBoy(o);
+    var hairBack = '', hairFront = '';
+    var frontCap = '<path d="M45 45 Q44 20 70 19 Q96 20 95 45 Q95 33 70 32 Q45 33 45 45 Z" fill="' + o.hair + '"/>';
+    if (o.style === 'bob') {
+      hairBack = '<path d="M41 42 Q41 12 70 12 Q99 12 99 42 L99 80 Q93 68 89 72 L89 44 L51 44 L51 72 Q47 68 41 80 Z" fill="' + o.hair + '"/>';
+      hairFront = frontCap;
+    } else if (o.style === 'pigtails') {
+      hairBack = '<ellipse cx="38" cy="56" rx="11" ry="17" fill="' + o.hair + '"/>' +
+                 '<ellipse cx="102" cy="56" rx="11" ry="17" fill="' + o.hair + '"/>' +
+                 '<path d="M44 44 Q44 14 70 14 Q96 14 96 44 L96 54 L44 54 Z" fill="' + o.hair + '"/>';
+      hairFront = frontCap;
+    } else if (o.style === 'glasses') {
+      hairBack = '<path d="M45 42 Q45 15 70 15 Q95 15 95 42 L95 50 L45 50 Z" fill="' + o.hair + '"/>';
+      hairFront = frontCap;
+    } else if (o.style === 'long') {
+      // 뒤로 길게 흐르는 장발
+      hairBack = '<path d="M39 46 Q39 11 70 11 Q101 11 101 46 L101 120 Q95 110 92 96 L90 52 L50 52 L48 96 Q45 110 39 120 Z" fill="' + o.hair + '"/>';
+      // 앞: 가르마 있는 부드러운 앞머리 + 얼굴 바깥으로 흘러내리는 옆 머리카락
+      hairFront = '<path d="M44 46 Q43 18 70 17 Q97 18 96 46 Q89 38 76 41 Q72 44 70 40 Q68 44 64 41 Q51 38 44 46 Z" fill="' + o.hair + '"/>' +
+        '<path d="M45 43 Q37 64 40 93 Q42 111 49 121 L56 118 Q48 107 48 88 Q48 66 50 46 Z" fill="' + o.hair + '"/>' +
+        '<path d="M95 43 Q103 64 100 93 Q98 111 91 121 L84 118 Q92 107 92 88 Q92 66 90 46 Z" fill="' + o.hair + '"/>';
+    } else { // curly
+      hairFront = '<g fill="' + o.hair + '">' +
+        '<circle cx="52" cy="29" r="12"/><circle cx="67" cy="21" r="13"/>' +
+        '<circle cx="83" cy="22" r="13"/><circle cx="95" cy="31" r="11"/>' +
+        '<circle cx="46" cy="43" r="8"/><circle cx="96" cy="44" r="8"/></g>';
+    }
+
+    var slim = !!o.slim;
+
+    // 다리 (여학생: 치마+맨다리 / 남학생: 바지)
+    var legs;
+    if (o.girl) {
+      legs = slim
+        ? '<path d="M53 116 L87 116 L93 141 L47 141 Z" fill="' + o.uniform + '"/>' +
+          '<path d="M70 116 L87 116 L93 141 L70 141 Z" fill="#000" opacity="0.08"/>' +
+          '<rect x="57" y="140" width="9" height="27" rx="4" fill="' + o.skin + '"/>' +
+          '<rect x="74" y="140" width="9" height="27" rx="4" fill="' + o.skin + '"/>'
+        : '<path d="M50 116 L90 116 L98 141 L42 141 Z" fill="' + o.uniform + '"/>' +
+          '<path d="M70 116 L90 116 L98 141 L70 141 Z" fill="#000" opacity="0.08"/>' +
+          '<rect x="55" y="140" width="11" height="27" rx="5" fill="' + o.skin + '"/>' +
+          '<rect x="74" y="140" width="11" height="27" rx="5" fill="' + o.skin + '"/>';
+    } else {
+      legs = '<path d="M52 116 L68 116 L66 167 L54 167 Z" fill="' + o.uniform + '"/>' +
+             '<path d="M72 116 L88 116 L86 167 L74 167 Z" fill="' + o.uniform + '"/>' +
+             '<path d="M72 116 L88 116 L87 142 L73 142 Z" fill="#000" opacity="0.07"/>';
+    }
+    // 신발
+    var shoes = '<ellipse cx="60" cy="169" rx="10" ry="5.5" fill="#3b2a1e"/>' +
+                '<ellipse cx="80" cy="169" rx="10" ry="5.5" fill="#3b2a1e"/>';
+
+    // 몸통 + 팔 (슬림 여부)
+    var torso = slim
+      ? '<path d="M50 120 L49 84 Q49 73 61 71 L79 71 Q91 73 91 84 L90 120 Z" fill="' + o.uniform + '"/>' +
+        '<path d="M70 71 L91 84 L90 120 L70 120 Z" fill="#000" opacity="0.08"/>' +
+        '<path d="M61 72 L70 83 L79 72 L75 69 L70 76 L65 69 Z" fill="#fff"/>'
+      : '<path d="M46 120 L44 82 Q44 70 60 68 L80 68 Q96 70 96 82 L94 120 Z" fill="' + o.uniform + '"/>' +
+        '<path d="M70 68 L96 82 L94 120 L70 120 Z" fill="#000" opacity="0.08"/>' +
+        '<path d="M60 69 L70 82 L80 69 L76 66 L70 74 L64 66 Z" fill="#fff"/>';
+    var arms = slim
+      ? '<path d="M50 85 Q44 100 50 115 L56 113 Q51 100 55 87 Z" fill="' + o.uniform + '"/>' +
+        '<path d="M90 85 Q96 100 90 115 L84 113 Q89 100 85 87 Z" fill="' + o.uniform + '"/>' +
+        '<circle cx="53" cy="115" r="5.5" fill="' + o.skin + '"/>' +
+        '<circle cx="87" cy="115" r="5.5" fill="' + o.skin + '"/>'
+      : '<path d="M46 84 Q38 100 46 116 L54 114 Q48 100 54 86 Z" fill="' + o.uniform + '"/>' +
+        '<path d="M94 84 Q102 100 94 116 L86 114 Q92 100 86 86 Z" fill="' + o.uniform + '"/>' +
+        '<circle cx="50" cy="116" r="6" fill="' + o.skin + '"/>' +
+        '<circle cx="90" cy="116" r="6" fill="' + o.skin + '"/>';
+
+    var tie = o.tie
+      ? '<path d="M67 76 L73 76 L75 96 L70 102 L65 96 Z" fill="' + o.tie + '"/>'
+      : '';
+    var necklace = o.necklace
+      ? '<path d="M62 74 Q70 84 78 74" fill="none" stroke="#c9ccd4" stroke-width="1.4"/>' +
+        '<circle cx="70" cy="82" r="2.1" fill="#dfe3ea" stroke="#a9adb5" stroke-width="0.6"/>' +
+        '<circle cx="69.3" cy="81.3" r="0.7" fill="#fff"/>'
+      : '';
+
+    // 얼굴 — 청순·큰 눈(렌즈 반짝) 또는 기본
+    var face = o.pretty
+      ? '<g class="eyes eyes-normal">' +
+          '<ellipse cx="60" cy="46" rx="4.4" ry="5.2" fill="#fff"/>' +
+          '<ellipse cx="80" cy="46" rx="4.4" ry="5.2" fill="#fff"/>' +
+          '<circle cx="60" cy="47" r="3.5" fill="#5b3a24"/>' +
+          '<circle cx="80" cy="47" r="3.5" fill="#5b3a24"/>' +
+          '<circle cx="60" cy="47.5" r="1.6" fill="#241408"/>' +
+          '<circle cx="80" cy="47.5" r="1.6" fill="#241408"/>' +
+          '<circle cx="61.6" cy="45.2" r="1.3" fill="#fff"/>' +
+          '<circle cx="81.6" cy="45.2" r="1.3" fill="#fff"/>' +
+          '<circle cx="58.4" cy="48.6" r="0.7" fill="#fff" opacity="0.9"/>' +
+          '<circle cx="78.4" cy="48.6" r="0.7" fill="#fff" opacity="0.9"/>' +
+          '<path d="M55 43 q5 -2.5 10 0" stroke="#241408" stroke-width="1.5" fill="none" stroke-linecap="round"/>' +
+          '<path d="M75 43 q5 -2.5 10 0" stroke="#241408" stroke-width="1.5" fill="none" stroke-linecap="round"/>' +
+        '</g>' +
+        '<g class="eyes eyes-smile">' +
+          '<path d="M55 47 Q60 40 65 47" stroke="#241408" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+          '<path d="M75 47 Q80 40 85 47" stroke="#241408" stroke-width="2.3" fill="none" stroke-linecap="round"/>' +
+        '</g>' +
+        '<circle cx="53" cy="54" r="3.6" fill="#f4a9a0" opacity="0.6"/>' +
+        '<circle cx="87" cy="54" r="3.6" fill="#f4a9a0" opacity="0.6"/>' +
+        '<path class="mouth mouth-normal" d="M67 55 q3 2.6 6 0" stroke="#d06074" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+        '<path class="mouth mouth-smile" d="M64 54 Q70 62 76 54 Q70 58 64 54 Z" fill="#d06074"/>'
+      : '<g class="eyes eyes-normal">' +
+          '<circle cx="60" cy="45" r="2.6" fill="#3b2a1e"/>' +
+          '<circle cx="80" cy="45" r="2.6" fill="#3b2a1e"/>' +
+        '</g>' +
+        '<g class="eyes eyes-smile">' +
+          '<path d="M56 46 Q60 40 64 46" stroke="#3b2a1e" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+          '<path d="M76 46 Q80 40 84 46" stroke="#3b2a1e" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+        '</g>' +
+        '<circle cx="54" cy="53" r="3.4" fill="#f4a9a0" opacity="0.6"/>' +
+        '<circle cx="86" cy="53" r="3.4" fill="#f4a9a0" opacity="0.6"/>' +
+        '<path class="mouth mouth-normal" d="M66 54 q4 4 8 0" stroke="#c8455a" stroke-width="1.7" fill="none" stroke-linecap="round"/>' +
+        '<path class="mouth mouth-smile" d="M64 53 Q70 62 76 53 Q70 58 64 53 Z" fill="#c8455a"/>';
+
+    var glasses = o.glasses
+      ? '<g fill="none" stroke="#3b2a1e" stroke-width="1.8">' +
+          '<circle cx="60" cy="45" r="8"/><circle cx="80" cy="45" r="8"/>' +
+          '<line x1="68" y1="45" x2="72" y2="45"/>' +
+        '</g>'
+      : '';
+
+    return '<svg class="senior-svg" viewBox="0 0 140 186" xmlns="http://www.w3.org/2000/svg">' +
+      // 바닥 그림자
+      '<ellipse cx="70" cy="179" rx="48" ry="7" fill="#3b2a1e" opacity="0.14"/>' +
+      // 의자 등받이
+      '<rect x="40" y="56" width="60" height="66" rx="9" fill="#a97c48"/>' +
+      '<rect x="46" y="62" width="48" height="20" rx="6" fill="#b98a55"/>' +
+      // 뒤 머리카락
+      hairBack +
+      // 의자 좌석 + 다리
+      '<rect x="30" y="116" width="80" height="15" rx="4" fill="#8b5e3c"/>' +
+      '<rect x="30" y="116" width="80" height="5" rx="4" fill="#9c6a42"/>' +
+      '<rect x="34" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      '<rect x="98" y="129" width="8" height="49" rx="2" fill="#7a5230"/>' +
+      // 사람 다리 + 신발
+      legs + shoes +
+      // 몸통(교복) + 음영 + 옷깃 + 넥타이 + 목걸이
+      torso + tie + necklace +
+      // 팔 + 손
+      arms +
+      // 목
+      '<rect x="64" y="60" width="12" height="12" rx="4" fill="' + o.skin + '"/>' +
+      // 머리 + 음영/하이라이트
+      '<circle cx="70" cy="44" r="25" fill="' + o.skin + '"/>' +
+      '<path d="M70 19 A25 25 0 0 1 70 69 Q84 44 70 19 Z" fill="#000" opacity="0.05"/>' +
+      '<ellipse cx="61" cy="35" rx="6" ry="8" fill="#fff" opacity="0.16"/>' +
+      // 앞 머리카락
+      hairFront +
+      // 얼굴
+      face +
+      glasses +
+    '</svg>';
+  }
+
+  chars.forEach(function (c, i) {
+    var fig = document.createElement('div');
+    fig.className = 'figure';
+    fig.innerHTML = buildSenior(SENIORS[i]);
+    c.appendChild(fig);
+  });
 
   function loadAnswers(index) {
     var set = ANSWERS[index];

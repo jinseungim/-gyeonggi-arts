@@ -105,18 +105,28 @@
   .c3 { background: #fffdf8; }
   .c4 { background: #fffdf8; }
 
-  /* 펼쳐지는 상세 패널 */
+  /* 펼쳐지는 상세 패널 — 서랍처럼 높이가 천천히 열리며 페이드 인 */
   .year-detail {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
     margin-top: -4px;
-    padding: 20px 24px;
+    padding: 0 24px;
     background: #fffdf8;
-    border: 1px solid rgba(139,94,60,0.35);
-    border-radius: 12px;
+    border: 1px solid transparent;
     border-top: none;
+    border-radius: 12px;
+    box-shadow: none;
+    transition: max-height 0.6s ease, opacity 0.4s ease 0.05s,
+                padding 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .year-item.open .year-detail {
+    max-height: 800px;
+    opacity: 1;
+    padding: 20px 24px;
+    border-color: rgba(139,94,60,0.35);
     box-shadow: 0 4px 12px rgba(59,42,30,0.12);
   }
-  .year-item.open .year-detail { display: block; }
 
   .year-detail .row {
     font-size: clamp(17px, 3vw, 21px);

@@ -6,15 +6,15 @@
   scene.setAttribute('aria-hidden', 'true');
 
   if (document.body.dataset.scene === 'classroom') {
-    // data-chalk가 지정되면 그 문구를(빈 값이면 빈 칠판), 없으면 기본 문구를 쓴다
+    // data-chalk가 지정되면 그 문구를(빈 값이면 빈 칠판), 없으면 빈 칠판
     var chalkText = ('chalk' in document.body.dataset)
       ? document.body.dataset.chalk
-      : '경기예고';
+      : '';
     scene.classList.add('scene--room');
     scene.innerHTML =
       '<div class="room-wall"></div>' +
-      '<div class="room-window rw-left"></div>' +
-      '<div class="room-window rw-right"></div>' +
+      '<div class="room-window rw-left"><div class="win-sky"></div><div class="win-leaves"></div></div>' +
+      '<div class="room-window rw-right"><div class="win-sky"></div><div class="win-leaves"></div></div>' +
       '<div class="room-clock"></div>' +
       '<div class="blackboard"><div class="chalk"></div></div>' +
       '<div class="room-floor"></div>' +
@@ -27,7 +27,22 @@
       chalk.remove(); // 빈 칠판 (밑줄도 없이)
     }
     document.body.insertBefore(scene, document.body.firstChild);
-    return; // 실내에는 꽃잎 없음
+
+    // 창밖으로 떨어지는 단풍잎 — 첫 화면 나무·하늘과 같은 진홍·버건디·금빛 톤
+    var winLeafColors = ['#8a2b20', '#a53a20', '#9c3620', '#b84e2a', '#c26234', '#cf6e34'];
+    Array.prototype.forEach.call(scene.querySelectorAll('.win-leaves'), function (box) {
+      for (var w = 0; w < 4; w++) {
+        var lf = document.createElement('div');
+        lf.className = 'win-leaf';
+        lf.style.left = (Math.random() * 90) + '%';
+        lf.style.background = winLeafColors[(Math.random() * winLeafColors.length) | 0];
+        lf.style.animationDuration = (8 + Math.random() * 6) + 's';
+        lf.style.animationDelay = (-Math.random() * 10) + 's';
+        lf.style.transform = 'scale(' + (0.6 + Math.random() * 0.7) + ')';
+        box.appendChild(lf);
+      }
+    });
+    return; // 실내에는 바깥 꽃잎 없음 (창밖 낙엽으로 대체)
   }
 
   // 단풍나무 SVG (가지 + 겹겹의 단풍잎)
