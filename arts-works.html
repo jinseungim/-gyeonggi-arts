@@ -89,6 +89,19 @@
     letter-spacing: 2px;
   }
 
+  /* 카테고리(전공) 소제목 */
+  .cat-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(16px, 3vw, 20px);
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 2px;
+    margin: 26px 0 14px;
+    padding-left: 12px;
+    border-left: 4px solid #b8894a;
+  }
+  .gen-title + .cat-title { margin-top: 0; }
+
   /* 작품 그리드 */
   .works-grid {
     display: grid;
@@ -241,6 +254,8 @@
   <main>
     <section class="gen-section">
       <h2 class="gen-title">23기<span class="badge">STUDENT WORKS</span></h2>
+
+      <h3 class="cat-title">서양화</h3>
       <div class="works-grid">
         <div class="work-card">
           <img src="images/works-23-01.jpg" alt="빛의 자리">
@@ -256,17 +271,6 @@
           </div>
         </div>
         <div class="work-card">
-          <img src="images/works-23-02.jpg" alt="수호의 경계에서">
-          <div class="work-caption">
-            <div class="work-title">수호의 경계에서</div>
-            <div class="work-desc">
-              이 작품은 눈에 보이지 않는 자연의 흐름과 진정한 가치를 지키는 수호자의 존재를 통해,<br>
-              인간이 잊고 있는 소중한 가치의 의미를 전하고자 한다.<br>
-              또한 탐욕으로 그 가치를 해치는 자는 결국 그 경계에서 받아들여질 수 없음을 표현하였다.
-            </div>
-          </div>
-        </div>
-        <div class="work-card">
           <img src="images/works-23-03.jpg" alt="자화상">
           <div class="work-caption">
             <div class="work-desc">
@@ -277,6 +281,25 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <h3 class="cat-title">한국화</h3>
+      <div class="works-grid">
+        <div class="work-card">
+          <img src="images/works-23-02.jpg" alt="수호의 경계에서">
+          <div class="work-caption">
+            <div class="work-title">수호의 경계에서</div>
+            <div class="work-desc">
+              이 작품은 눈에 보이지 않는 자연의 흐름과 진정한 가치를 지키는 수호자의 존재를 통해,<br>
+              인간이 잊고 있는 소중한 가치의 의미를 전하고자 한다.<br>
+              또한 탐욕으로 그 가치를 해치는 자는 결국 그 경계에서 받아들여질 수 없음을 표현하였다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="cat-title">조소</h3>
+      <div class="works-grid">
         <div class="work-card">
           <img src="images/works-23-04.jpg" alt="이름">
           <div class="work-caption">
@@ -287,24 +310,50 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <h3 class="cat-title">디자인</h3>
+      <div class="works-grid">
         <div class="work-card">
           <div class="work-slider" data-slider>
             <div class="slides">
-              <img src="images/works-23-bunsik-1.jpg" alt="분식특공대">
-              <img src="images/works-23-bunsik-2.jpg" alt="분식특공대">
-              <img src="images/works-23-bunsik-3.jpg" alt="분식특공대">
-              <img src="images/works-23-bunsik-4.jpg" alt="분식특공대">
-              <img src="images/works-23-bunsik-5.jpg" alt="분식특공대">
-              <img src="images/works-23-bunsik-6.jpg" alt="분식특공대">
+              <img src="images/works-23-bunsik-1.jpg" alt="분식수호대">
+              <img src="images/works-23-bunsik-2.jpg" alt="분식수호대">
+              <img src="images/works-23-bunsik-3.jpg" alt="분식수호대">
+              <img src="images/works-23-bunsik-4.jpg" alt="분식수호대">
+              <img src="images/works-23-bunsik-5.jpg" alt="분식수호대">
+              <img src="images/works-23-bunsik-6.jpg" alt="분식수호대">
             </div>
             <button class="nav prev" type="button" aria-label="이전">&lt;</button>
             <button class="nav next" type="button" aria-label="다음">&gt;</button>
             <div class="dots"></div>
           </div>
           <div class="work-caption">
-            <div class="work-title">분식특공대</div>
+            <div class="work-title">분식수호대</div>
             <div class="work-desc">
-              작품 설명을 입력하세요.
+              숨은 맛집으로 입소문을 타고, 방송에까지 소개되며 최고의 인기를 누리던 할매분식.<br>
+              그러나 세월이 흐르며 낡은 가게는 무개념 별점 테러범과 재개발 세력의 표적이 되고, 결국 폐업의 위기에 놓인다.<br>
+              이에 할머니는 전설의 레시피로 분식수호대를 제조하는데...<br><br>
+              분식수호대! 지켜라! 되찾아라! 승리하라!
+            </div>
+          </div>
+        </div>
+        <div class="work-card">
+          <div class="work-slider" data-slider>
+            <div class="slides">
+              <img src="images/works-23-reungtori-1.jpg" alt="릉이와 토리">
+              <img src="images/works-23-reungtori-2.jpg" alt="릉이와 토리">
+              <img src="images/works-23-reungtori-3.jpg" alt="릉이와 토리">
+            </div>
+            <button class="nav prev" type="button" aria-label="이전">&lt;</button>
+            <button class="nav next" type="button" aria-label="다음">&gt;</button>
+            <div class="dots"></div>
+          </div>
+          <div class="work-caption">
+            <div class="work-title">릉이와 토리</div>
+            <div class="work-desc">
+              서로 상반된 성격의 강아지와 고양이 캐릭터 디자인이다.<br>
+              강아지는 애교가 많고 고양이는 무뚝뚝하다 라는 편견을 깨기 위해 만들어진 캐릭터들이다.
             </div>
           </div>
         </div>
@@ -313,6 +362,8 @@
 
     <section class="gen-section">
       <h2 class="gen-title">22기<span class="badge">STUDENT WORKS</span></h2>
+
+      <h3 class="cat-title">조소</h3>
       <div class="works-grid">
         <div class="work-card">
           <img src="images/works-22-01.jpg" alt="cradle to the grave">
@@ -324,6 +375,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <h3 class="cat-title">디자인</h3>
+      <div class="works-grid">
         <div class="work-card">
           <div class="work-slider" data-slider>
             <div class="slides">
